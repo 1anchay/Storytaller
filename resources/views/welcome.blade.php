@@ -3,7 +3,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/heroicons@1.0.6/outline/index.js"></script>
   </head>
-  @include('header')  <!-- Подключение футера здесь -->
+  @include('header')  <!-- Подключение шапки -->
 
 <!-- Секция кейсов -->
 <section class="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 py-16">
@@ -17,7 +17,7 @@
         <h3 class="text-xl text-white font-semibold mb-2">CS:GO Prime аккаунт</h3>
         <p class="text-gray-300 text-sm mb-2">Прайм-статус, инвентарь на 1200₽, звание: Legendary Eagle.</p>
         <p class="text-yellow-400 font-bold mb-4">Цена: 890₽</p>
-        <a href="{{ route('case.view', ['caseId' => 1]) }}" class="w-full py-2 bg-yellow-500 text-gray-900 font-semibold rounded-md hover:bg-yellow-400">Открыть кейс</a>
+        <a href="{{ route('case1') }}" class="w-full py-2 bg-yellow-500 text-gray-900 font-semibold rounded-md hover:bg-yellow-400">Открыть кейс </a>
       </div>
 
       <!-- Кейс 2 -->
@@ -26,7 +26,7 @@
         <h3 class="text-xl text-white font-semibold mb-2">Dota 2 — Immortal аккаунт</h3>
         <p class="text-gray-300 text-sm mb-2">Более 2000 игр, редкие скины, рейтинг Divine.</p>
         <p class="text-yellow-400 font-bold mb-4">Цена: 1 500₽</p>
-        <a href="{{ route('case.view', ['caseId' => 2]) }}" class="w-full py-2 bg-yellow-500 text-gray-900 font-semibold rounded-md hover:bg-yellow-400">Открыть кейс</a>
+        <a href="{{ route('case2') }}" class="w-full py-2 bg-yellow-500 text-gray-900 font-semibold rounded-md hover:bg-yellow-400">Открыть кейс </a>
       </div>
 
       <!-- Кейс 3 -->
@@ -83,7 +83,12 @@
   <a href="{{ route('case.view', ['caseId' => 8]) }}" class="w-full py-2 bg-yellow-500 text-gray-900 font-semibold rounded-md hover:bg-yellow-400">Открыть кейс</a>
 </div>
 <!-- Подключение футера -->
-@include('footer')  <!-- Подключение футера здесь -->
+</section>
+
+<!-- Футер -->
+<footer id="footer" class="bg-gray-800 text-white py-8">
+    @include('footer')
+</footer>
 
 <script>
   const modal = document.getElementById('caseModal');
@@ -126,46 +131,11 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  /* Стили для кейсов */
-  .case-card img {
-    transition: transform 0.3s ease-in-out;
-  }
+  /* Стили для кей
+case-card { background-color: #2c2c2c; transition: transform 0.3s ease, box-shadow 0.3s ease; }
 
-  .case-card:hover img {
-    transform: scale(1.05);
-  }
+.case-card:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
 
-  /* Модальное окно */
-  #caseModal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-  }
+/* Стили для футера */ #footer { background-color: #333; color: #fff; }
 
-  #caseModal .bg-white {
-    max-width: 500px;
-    width: 100%;
-  }
-
-  /* Для темной темы */
-  body.dark {
-    background-color: #121212;
-    color: white;
-  }
-
-  body.dark .bg-gray-900 {
-    background-color: #1a1a1a;
-  }
-
-  body.dark .text-yellow-400 {
-    color: #f5e142;
-  }
-
-  body.dark .case-card {
-    background-color: #2c2c2c;
-  }
-</style>
+#footer .text-white { color: #f0f0f0; } </style>

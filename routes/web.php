@@ -57,3 +57,14 @@ Route::middleware(['auth'])->group(function () {
 Route::get('dashboard', function () {
     return redirect()->intended('/profile'); // Редирект после входа в систему
 })->middleware(['auth'])->name('dashboard');
+
+Route::get('/case1', function() {
+    return view('cases.case1');
+})->name('case1');
+
+Route::get('/case2', function() {
+    return view('cases.case2');
+})->name('case2');
+
+// Определите маршрут для страницы покупки кейса
+Route::get('/buy-case/{caseId}', [CaseController::class, 'buy'])->name('case.buy');
