@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
+use App\Models\GameCase;
 
 // Главная страница (используем представление 'welcome')
 Route::get('/', function () {
@@ -19,7 +20,16 @@ Route::get('/', function () {
 Route::get('/react', [ReactController::class, 'index']);
 
 // Роуты для Cases
+// Путь для отображения формы создания нового кейса
+Route::get('/cases/create', [CaseController::class, 'create'])->name('cases.create');
+
+// Путь для обработки POST-запроса (сохранение нового кейса)
+Route::post('/cases', [CaseController::class, 'store'])->name('cases.store');
+
+// Путь для отображения всех кейсов (опционально)
 Route::get('/cases', [CaseController::class, 'index']);
+// routes/web.php
+Route::get('/case/{caseId}', [CaseController::class, 'view'])->name('case.view');
 
 // Роуты аутентификации
 Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');

@@ -70,6 +70,7 @@
 
   footer ul li a:hover {
     color: #f5e142;
+    transform: scale(1.05); /* Добавим небольшой эффект увеличения на ховере */
   }
 
   footer .border-t {

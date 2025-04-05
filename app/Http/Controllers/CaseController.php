@@ -1,41 +1,42 @@
 <?php
 // app/Http/Controllers/CaseController.php
+
 namespace App\Http\Controllers;
 
+use App\Models\GameCase;
 use Illuminate\Http\Request;
 
 class CaseController extends Controller
 {
-    public function index()
+    // Метод для отображения формы добавления кейса (если необходимо)
+    public function create()
     {
-        // Пример кейсов с изображениями и ценами
-        $cases = [
-            [
-                'type' => 'Steam Key',
-                'description' => 'Получите случайный ключ для Steam, включая игры на любую платформу!',
-                'price' => 499,
-                'image' => 'steam-case.jpg',
-            ],
-            [
-                'type' => 'Minecraft Account',
-                'description' => 'Купите Minecraft аккаунт с полным доступом!',
-                'price' => 799,
-                'image' => 'minecraft-case.jpg',
-            ],
-            [
-                'type' => 'CS:GO Skins',
-                'description' => 'Получите уникальные скины для CS:GO!',
-                'price' => 1200,
-                'image' => 'csgo-case.jpg',
-            ],
-            [
-                'type' => 'Steam Wallet',
-                'description' => 'Получите пополнение для вашего Steam кошелька!',
-                'price' => 1000,
-                'image' => 'steam-wallet-case.jpg',
-            ],
-        ];
+        return view('cases.create'); // Отобразить форму для создания нового кейса
+    }
 
-        return view('welcome', compact('cases'));
+    // Метод для сохранения нового кейса
+    public function store(Request $request)
+    {
+        // Валидация входных данных
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required|numeric',
+            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        ]);
+
+        // Сохранение изображения в storage и получение пути
+        $imagePath = $request->file('image')->store('public/cases');
+
+        // Создание нового кейса в базе данных
+        GameCase::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'image' => basename($imagePath), // Сохраняем только имя файла изображения
+        ]);
+
+        // Перенаправление на страницу со списком кейсов после успешного сохранения
+        return redirect('/cases');
     }
 }
