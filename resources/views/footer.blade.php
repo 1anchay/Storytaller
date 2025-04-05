@@ -52,44 +52,87 @@
       </div>
     </div>
   </div>
+
+  <!-- Кнопка чата с поддержкой -->
+  <div class="fixed bottom-6 right-6">
+    <button id="chatButton" class="flex items-center justify-center p-4 bg-yellow-400 text-white rounded-full shadow-lg hover:bg-yellow-500 transition duration-300">
+      <span class="text-lg">💬</span> <!-- Эмодзи для чата -->
+    </button>
+  </div>
+
+  <!-- Модальное окно чата -->
+  <div id="chatModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden justify-center items-center">
+    <div class="bg-white p-6 rounded-lg w-96 max-w-full">
+      <h4 class="text-xl font-semibold text-gray-900 mb-4">Чат с поддержкой</h4>
+      <div id="chatBox" class="h-60 overflow-y-scroll mb-4 border border-gray-300 p-4 rounded-lg bg-gray-50">
+        <!-- Сообщения будут здесь -->
+      </div>
+      <input id="chatInput" type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Напишите сообщение..." />
+      <button id="sendMessage" class="w-full mt-2 bg-yellow-400 text-white p-2 rounded-md hover:bg-yellow-500 transition duration-300">
+        Отправить
+      </button>
+      <button id="closeChat" class="mt-4 text-gray-600 hover:text-yellow-400">Закрыть</button>
+    </div>
+  </div>
 </footer>
 
+<!-- Стиль для чата -->
 <style>
-  /* Стиль футера */
-  footer {
-    background-color: #1a1a1a;
+  #chatModal {
+    display: none;
   }
 
-  footer h4 {
-    color: #f5e142;
+  #chatButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000; /* Обеспечиваем, чтобы кнопка была поверх всех элементов */
   }
 
-  footer ul li a {
-    color: #d1d1d1;
-  }
-
-  footer ul li a:hover {
-    color: #f5e142;
-    transform: scale(1.05); /* Добавим небольшой эффект увеличения на ховере */
-  }
-
-  footer .border-t {
-    border-top: 1px solid #333;
-  }
-
-  footer .text-sm {
-    font-size: 0.875rem;
-  }
-
-  footer .text-gray-400 {
-    color: #cfcfcf;
-  }
-
-  footer .text-yellow-400 {
-    color: #f5e142;
-  }
-
-  footer .text-gray-700 {
-    color: #4a4a4a;
+  #chatModal.show {
+    display: flex;
   }
 </style>
+
+<!-- Скрипт для работы с чатом -->
+<script>
+  // Открыть чат
+  document.getElementById('chatButton').addEventListener('click', function () {
+    document.getElementById('chatModal').classList.add('show');
+  });
+
+  // Закрыть чат
+  document.getElementById('closeChat').addEventListener('click', function () {
+    document.getElementById('chatModal').classList.remove('show');
+  });
+
+  // Отправить сообщение
+  document.getElementById('sendMessage').addEventListener('click', function () {
+    const message = document.getElementById('chatInput').value;
+    if (message.trim() !== '') {
+      fetch("{{ route('chat.send') }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ message: message })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const chatBox = document.getElementById('chatBox');
+        const newMessage = document.createElement('p');
+        newMessage.textContent = `Вы: ${message}`;
+        newMessage.classList.add('text-gray-900', 'mb-2');
+        chatBox.appendChild(newMessage);
+        document.getElementById('chatInput').value = ''; // Очищаем поле ввода
+        chatBox.scrollTop = chatBox.scrollHeight; // Прокрутка вниз
+      })
+      .catch(error => {
+        console.error('Ошибка отправки сообщения:', error);
+      });
+    }
+  });
+</script>

@@ -20,16 +20,10 @@ Route::get('/', function () {
 Route::get('/react', [ReactController::class, 'index']);
 
 // Роуты для Cases
-// Путь для отображения формы создания нового кейса
-Route::get('/cases/create', [CaseController::class, 'create'])->name('cases.create');
-
-// Путь для обработки POST-запроса (сохранение нового кейса)
-Route::post('/cases', [CaseController::class, 'store'])->name('cases.store');
-
-// Путь для отображения всех кейсов (опционально)
-Route::get('/cases', [CaseController::class, 'index']);
-// routes/web.php
-Route::get('/case/{caseId}', [CaseController::class, 'view'])->name('case.view');
+Route::get('/cases/create', [CaseController::class, 'create'])->name('cases.create'); // Страница создания кейса
+Route::post('/cases', [CaseController::class, 'store'])->name('cases.store'); // Сохранение нового кейса
+Route::get('/cases', [CaseController::class, 'index']); // Список всех кейсов
+Route::get('/case/{caseId}', [CaseController::class, 'view'])->name('case.view'); // Просмотр кейса по ID
 
 // Роуты аутентификации
 Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -46,10 +40,7 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 // Роуты для профиля (доступ только для аутентифицированных пользователей)
 Route::middleware(['auth'])->group(function () {
-    // Путь для отображения страницы редактирования профиля
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    
-    // Путь для обновления профиля
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
@@ -58,6 +49,7 @@ Route::get('dashboard', function () {
     return redirect()->intended('/profile'); // Редирект после входа в систему
 })->middleware(['auth'])->name('dashboard');
 
+// Пример страницы кейса
 Route::get('/case1', function() {
     return view('cases.case1');
 })->name('case1');
@@ -66,5 +58,26 @@ Route::get('/case2', function() {
     return view('cases.case2');
 })->name('case2');
 
-// Определите маршрут для страницы покупки кейса
+// Страница для покупки кейса
 Route::get('/buy-case/{caseId}', [CaseController::class, 'buy'])->name('case.buy');
+
+// Роуты чата
+// Роут для отправки сообщения от пользователя
+Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+
+// Роут для получения сообщений для пользователя (с помощью AJAX)
+Route::get('/chat/messages', [ChatController::class, 'getMessages'])->name('chat.getMessages');
+
+// Роут для чата администратора (показ всех сообщений)
+Route::get('/admin/chat', [ChatController::class, 'getAdminMessages'])->name('admin.chat');
+
+// Роут для отправки сообщений администратором
+Route::post('/admin/chat/send', [ChatController::class, 'sendAdminMessage'])->name('admin.chat.send');
+
+use App\Http\Controllers\AdminController;
+
+Route::middleware(['admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    // Добавьте другие админские страницы
+});

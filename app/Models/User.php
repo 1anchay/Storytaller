@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -11,11 +12,13 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    // Добавляем поле 'role' в $fillable
     protected $fillable = [
         'name',
         'email',
         'password',
-        'profile_photo_path', // Убедитесь, что добавили это свойство
+        'profile_photo_path',
+        'role',  // Добавим роль
     ];
 
     protected $hidden = [
