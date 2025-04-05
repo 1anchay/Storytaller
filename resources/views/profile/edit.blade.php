@@ -36,14 +36,13 @@
                             <div class="flex items-center space-x-4">
                                 <!-- Предварительный просмотр аватарки -->
                                 <div id="avatar-preview">
-                                    @if($user->avatar)
-                                        <img id="avatar-img" src="{{ asset('storage/avatars/' . $user->avatar) }}" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-blue-500">
-                                    @else
-                                        <img id="preview" src="#" alt="Avatar Preview" class="hidden w-20 h-20 rounded-full border-4 border-blue-500">
-                                    @endif
+                                    <img id="avatar-img" 
+                                         src="{{ $user->profile_photo_url }}" 
+                                         alt="Avatar Preview" 
+                                         class="w-20 h-20 rounded-full border-4 border-blue-500">
                                 </div>
-                                
-                                <input type="file" id="avatar" name="avatar" class="block mt-1 w-full p-2 border border-gray-300 rounded-lg shadow-sm" onchange="previewImage(event)" />
+
+                                <input type="file" id="avatar" name="profile_photo" class="block mt-1 w-full p-2 border border-gray-300 rounded-lg shadow-sm" onchange="previewImage(event)" />
                             </div>
                         </div>
 
@@ -59,39 +58,25 @@
         </div>
     </div>
 </div>
-
+@include('footer') <!-- Вставляем футер -->
 @endsection
 
 @section('scripts')
 <script>
     // Функция для предварительного просмотра изображения
     function previewImage(event) {
-        const preview = document.getElementById('preview');
+        const preview = document.getElementById('avatar-img');
         const file = event.target.files[0];
-        
+
         if (file) {
             const reader = new FileReader();
 
             reader.onload = function(e) {
                 preview.src = e.target.result;
-                preview.classList.remove('hidden'); // Показываем изображение
             };
 
             reader.readAsDataURL(file);
         }
     }
-
-    // Показать аватар пользователя (если он уже есть)
-    document.addEventListener("DOMContentLoaded", function() {
-        const avatarPreview = document.getElementById('avatar-img');
-        const avatarInput = document.getElementById('avatar');
-        const preview = document.getElementById('preview');
-
-        // Если аватар уже есть, показываем его
-        if (avatarPreview && avatarInput.files.length === 0) {
-            avatarPreview.style.display = 'block';
-            preview.style.display = 'none';  // Прячем предварительный просмотр
-        }
-    });
 </script>
 @endsection

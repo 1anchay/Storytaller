@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -11,10 +12,7 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        // Получаем текущего авторизованного пользователя
         $user = Auth::user();
-
-        // Возвращаем представление с данными пользователя
         return view('profile.edit', compact('user'));
     }
 
@@ -23,14 +21,12 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        // Валидация входных данных
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // Убедитесь, что это изображение
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Валидация для фото
         ]);
 
-        // Получаем текущего пользователя
         $user = Auth::user();
         
         // Обновляем имя и email
@@ -49,10 +45,8 @@ class ProfileController extends Controller
 
             // Обновляем путь к фото пользователя
             $user->profile_photo_path = $path;
-            $user->profile_photo_url = $path;
         }
 
-        // Сохраняем обновленные данные пользователя
         $user->save();
 
         return redirect()->route('profile.edit')->with('status', 'Profile updated!');

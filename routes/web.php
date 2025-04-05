@@ -42,3 +42,8 @@ Route::middleware(['auth'])->group(function () {
     // Путь для обновления профиля
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+// Редирект после успешной аутентификации (опционально)
+Route::get('dashboard', function () {
+    return redirect()->intended('/profile'); // Редирект после входа в систему
+})->middleware(['auth'])->name('dashboard');

@@ -15,7 +15,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'profile_photo_path', // Обязательно добавьте сюда это свойство
+        'profile_photo_path', // Убедитесь, что добавили это свойство
     ];
 
     protected $hidden = [
@@ -38,7 +38,7 @@ class User extends Authenticatable
             return Storage::url($this->profile_photo_path);
         }
 
-        // Если фото нет, возвращаем URL по умолчанию
+        // Если фото нет, возвращаем URL по умолчанию (Gravatar)
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=identicon&s=200';
     }
 }
