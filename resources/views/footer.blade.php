@@ -3,15 +3,19 @@
 <footer class="bg-gradient-to-r from-gray-900 via-purple-900 to-blue-900 text-white py-16 mt-12 rounded-t-3xl shadow-xl relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-            <!-- Логотип и описание -->
-            <div class="flex flex-col items-start space-y-6">
-                <a href="{{ url('/') }}" class="text-5xl font-bold text-yellow-400 hover:text-pink-400 transition-all duration-300 tracking-wide">ReМайн</a>
-                <p class="text-gray-300 text-lg font-light mb-4">Лучшие кейсы для аккаунтов Steam. Откройте новые возможности с нами и погрузитесь в мир киберпанка!</p>
-            </div>
+<!-- Логотип и описание -->
+<div class="flex flex-col items-start space-y-6">
+    <a href="{{ url('/') }}" class="text-5xl font-extrabold text-blue-500 hover:text-blue-400 transition-all duration-300 tracking-wide transform hover:scale-105 shadow-lg hover:shadow-2xl">
+        ReМайн
+    </a>
+    <p class="text-gray-300 text-lg font-light mb-4">
+        Лучшие кейсы для аккаунтов Steam. Откройте новые возможности с нами и погрузитесь в мир киберпанка!
+    </p>
+</div>
 
             <!-- Быстрые ссылки -->
             <div class="flex flex-col space-y-4">
-                <h4 class="text-lg font-semibold text-yellow-400 mb-4">Навигация</h4>
+<h4 class="text-lg font-semibold text-yellow-400 mb-4 animate-breathing-text">Навигация</h4>
                 <ul class="space-y-3">
                     <li><a href="{{ url('/') }}" class="text-gray-400 hover:text-yellow-400 transition duration-300 hover:scale-105 transform">Главная</a></li>
                     <li><a href="{{ url('/agreement') }}" class="text-gray-400 hover:text-yellow-400 transition duration-300 hover:scale-105 transform">Соглашение</a></li>
@@ -23,7 +27,7 @@
 
            <!-- Социальные сети с иконками -->
 <div class="flex flex-col space-y-4">
-    <h4 class="text-lg font-semibold text-yellow-400 mb-4">Следите за нами</h4>
+<h4 class="text-lg font-semibold text-yellow-400 mb-4 animate-breathing-text">Следите за нами</h4>
     <ul class="space-y-3">
         <li class="flex items-center space-x-2">
             <!-- Telegram Icon -->
@@ -65,6 +69,30 @@
 </footer>
 
 <style>
+@keyframes breathingText {
+  0% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.animate-breathing-text {
+  background: linear-gradient(90deg, yellow, transparent);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  color: transparent;
+  display: inline;
+  -webkit-background-clip: text;
+  animation: breathingText 3s ease-in-out infinite;
+}
+
+
+
 @keyframes run {
   0% {
     left: -50px; /* Начальная позиция */

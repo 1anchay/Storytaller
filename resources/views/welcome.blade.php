@@ -3,10 +3,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/heroicons@1.0.6/outline/index.js"></script>
   </head>
-  @include('header')  <!-- Подключение шапки -->
+  @include('header') 
 
 <!-- Секция кейсов -->
-<section class="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 py-16">
+<section class="bg-white py-16">
+
   <div class="max-w-7xl mx-auto px-6">
     <h2 class="text-4xl text-yellow-400 font-bold mb-12 text-center tracking-wide">Кейсы аккаунтов Steam</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
@@ -82,7 +83,6 @@
   <p class="text-yellow-400 font-bold mb-4">Цена: 1 990₽</p>
   <a href="{{ route('case.view', ['caseId' => 8]) }}" class="w-full py-2 bg-yellow-500 text-gray-900 font-semibold rounded-md hover:bg-yellow-400">Открыть кейс</a>
 </div>
-<!-- Подключение футера -->
 </section>
 
 <!-- Футер -->
@@ -130,12 +130,4 @@
   #theme-toggle:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
-
-  /* Стили для кей
-case-card { background-color: #2c2c2c; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-
-.case-card:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
-
-/* Стили для футера */ #footer { background-color: #333; color: #fff; }
-
-#footer .text-white { color: #f0f0f0; } </style>
+ </style>

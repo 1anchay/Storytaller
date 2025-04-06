@@ -81,3 +81,11 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     // Добавьте другие админские страницы
 });
+use Illuminate\Auth\Notifications\VerifyEmail;
+
+use App\Http\Controllers\Auth\VerificationController;
+
+// Подтверждение почты
+Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.send');
