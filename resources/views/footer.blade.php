@@ -1,57 +1,96 @@
-<footer class="bg-gray-900 text-white py-8 mt-12">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-      <!-- Логотип -->
-      <div class="flex flex-col items-start">
-        <a href="{{ route('home') }}" class="text-2xl font-semibold text-yellow-400 mb-4">ReМайн</a>
-        <p class="text-gray-400 text-sm">Мы предоставляем кейсы для аккаунтов Steam, которые откроют перед вами новые возможности и улучшат ваш игровой опыт.</p>
-      </div>
+<!-- resources/views/footer.blade.php -->
 
-      <!-- Быстрые ссылки -->
-      <div class="flex flex-col space-y-2">
-        <h4 class="text-lg font-semibold text-yellow-400 mb-4">Навигация</h4>
-        <ul class="space-y-2">
-          <li><a href="{{ route('home') }}" class="text-gray-400 hover:text-yellow-400 transition duration-300">Главная</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">О нас</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Кейсы Steam</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Контакты</a></li>
-        </ul>
-      </div>
+<footer class="bg-gradient-to-r from-gray-900 via-purple-900 to-blue-900 text-white py-16 mt-12 rounded-t-3xl shadow-xl relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+            <!-- Логотип и описание -->
+            <div class="flex flex-col items-start space-y-6">
+                <a href="{{ url('/') }}" class="text-5xl font-bold text-yellow-400 hover:text-pink-400 transition-all duration-300 tracking-wide">ReМайн</a>
+                <p class="text-gray-300 text-lg font-light mb-4">Лучшие кейсы для аккаунтов Steam. Откройте новые возможности с нами и погрузитесь в мир киберпанка!</p>
+            </div>
 
-      <!-- Социальные сети -->
-      <div class="flex flex-col space-y-2">
-        <h4 class="text-lg font-semibold text-yellow-400 mb-4">Следите за нами</h4>
-        <ul class="space-y-2">
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Facebook</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Twitter</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Instagram</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">LinkedIn</a></li>
-        </ul>
-      </div>
+            <!-- Быстрые ссылки -->
+            <div class="flex flex-col space-y-4">
+                <h4 class="text-lg font-semibold text-yellow-400 mb-4">Навигация</h4>
+                <ul class="space-y-3">
+                    <li><a href="{{ url('/') }}" class="text-gray-400 hover:text-yellow-400 transition duration-300 hover:scale-105 transform">Главная</a></li>
+                    <li><a href="{{ url('/agreement') }}" class="text-gray-400 hover:text-yellow-400 transition duration-300 hover:scale-105 transform">Соглашение</a></li>
+                    <li><a href="{{ url('/support') }}" class="text-gray-400 hover:text-yellow-400 transition duration-300 hover:scale-105 transform">Поддержка</a></li>
+                    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-      <!-- Поддержка -->
-      <div class="flex flex-col space-y-2">
-        <h4 class="text-lg font-semibold text-yellow-400 mb-4">Поддержка</h4>
-        <ul class="space-y-2">
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">FAQ</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Обратная связь</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Политика конфиденциальности</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Условия использования</a></li>
-        </ul>
-      </div>
-    </div>
+                </ul>
+            </div>
 
-    <!-- Подвал с авторскими правами -->
-    <div class="mt-12 border-t border-gray-700 pt-6">
-      <div class="flex items-center justify-between">
-        <p class="text-gray-400 text-sm">© 2025 ReМайн. Все права защищены.</p>
-        <div class="flex space-x-4">
-          <a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Политика конфиденциальности</a>
-          <a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">Условия использования</a>
+           <!-- Социальные сети с иконками -->
+<div class="flex flex-col space-y-4">
+    <h4 class="text-lg font-semibold text-yellow-400 mb-4">Следите за нами</h4>
+    <ul class="space-y-3">
+        <li class="flex items-center space-x-2">
+            <!-- Telegram Icon -->
+            <i class="fab fa-telegram-plane text-2xl text-gray-400 hover:text-yellow-400 transition duration-300"></i>
+            <a href="https://t.me/your_telegram" target="_blank" class="text-gray-400 hover:text-yellow-400 transition duration-300">Telegram</a>
+        </li>
+        <li class="flex items-center space-x-2">
+            <!-- VK Icon -->
+            <i class="fab fa-vk text-2xl text-gray-400 hover:text-yellow-400 transition duration-300"></i>
+            <a href="https://vk.com/your_vk" target="_blank" class="text-gray-400 hover:text-yellow-400 transition duration-300">Группа VK</a>
+        </li>
+        <li class="flex items-center space-x-2">
+            <!-- YouTube Icon -->
+            <i class="fab fa-youtube text-2xl text-gray-400 hover:text-yellow-400 transition duration-300"></i>
+            <a href="https://www.youtube.com/your_youtube" target="_blank" class="text-gray-400 hover:text-yellow-400 transition duration-300">YouTube</a>
+        </li>
+    </ul>
+</div>
+
+
+        <!-- Подвал с авторскими правами -->
+        <div class="mt-12 border-t border-gray-700 pt-6">
+            <div class="flex items-center justify-between">
+                <p class="text-gray-400 text-sm">© 2025 ReМайн. Все права защищены.</p>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+
+   <!-- Анимация человечка с видео -->
+<div class="absolute bottom-4 left-0 right-0 z-20">
+    <div class="animate-run">
+        <video autoplay loop muted class="w-16 h-16 rounded-full shadow-xl">
+            <source src="https://your-website.com/character-walking.mp4" type="video/mp4" />
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
+</div>
+
+</footer>
+
+<style>
+@keyframes run {
+  0% {
+    left: -50px; /* Начальная позиция */
+  }
+  50% {
+    left: 50%; /* Промежуточная позиция (по центру) */
+    transform: translateX(-50%);
+  }
+  100% {
+    left: 100%; /* Конечная позиция */
+  }
+}
+
+.animate-run {
+  position: absolute;
+  animation: run 5s linear infinite;
+}
+
+
+.animate-run {
+    position: absolute;
+    animation: run 5s linear infinite;
+}
+</style>
+
+
 
   <!-- Кнопка чата с поддержкой -->
   <div class="fixed bottom-6 right-6">
@@ -93,6 +132,11 @@
 
   #chatModal.show {
     display: flex;
+  }
+
+  footer {
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
   }
 </style>
 

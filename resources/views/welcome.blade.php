@@ -86,7 +86,7 @@
 </section>
 
 <!-- Футер -->
-<footer id="footer" class="bg-gray-800 text-white py-8">
+<footer>
     @include('footer')
 </footer>
 

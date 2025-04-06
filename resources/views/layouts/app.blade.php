@@ -2,12 +2,16 @@
 
 <!DOCTYPE html>
 <html lang="en">
+@stack('styles')
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link href="{{ mix('css/app.css') }}" rel="stylesheet"> <!-- Подключаем стили -->
 </head>
+@stack('scripts')
+
 <body class="bg-gray-100">
     @yield('content') <!-- Содержимое страницы будет вставляться сюда -->
 

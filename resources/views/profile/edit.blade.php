@@ -39,7 +39,7 @@
                                     <img id="avatar-img" 
                                          src="{{ $user->profile_photo_url }}" 
                                          alt="Avatar Preview" 
-                                         class="w-20 h-20 rounded-full border-4 border-blue-500">
+                                         class="max-w-xs h-20 rounded-full border-4 border-blue-500">
                                 </div>
 
                                 <input type="file" id="avatar" name="profile_photo" class="block mt-1 w-full p-2 border border-gray-300 rounded-lg shadow-sm" onchange="previewImage(event)" />
