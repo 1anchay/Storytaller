@@ -57,6 +57,24 @@ Route::get('/case1', function() {
 Route::get('/case2', function() {
     return view('cases.case2');
 })->name('case2');
+Route::get('/case3', function() {
+    return view('cases.case3');
+})->name('case3');
+Route::get('/case4', function() {
+    return view('cases.case4');
+})->name('case4');
+Route::get('/case5', function() {
+    return view('cases.case5');
+})->name('case5');
+Route::get('/case6', function() {
+    return view('cases.case6');
+})->name('case6');
+Route::get('/case7', function() {
+    return view('cases.case7');
+})->name('case7');
+Route::get('/case8', function() {
+    return view('cases.case8');
+})->name('case8');
 
 // Страница для покупки кейса
 Route::get('/buy-case/{caseId}', [CaseController::class, 'buy'])->name('case.buy');
