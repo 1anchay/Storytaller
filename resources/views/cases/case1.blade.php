@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @include('header')
-
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/heroicons@1.0.6/outline/index.js"></script>
+  </head>
 @section('content')
 <div class="min-h-screen flex flex-col">
   <div class="flex-grow container mx-auto py-12">
