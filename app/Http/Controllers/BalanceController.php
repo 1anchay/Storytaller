@@ -68,22 +68,23 @@ class BalanceController extends Controller
      * Платежный шлюз (GET версия)
      */
     public function paymentGateway($transactionId)
-    {
-        $transaction = Transaction::findOrFail($transactionId);
-        
-        if ($transaction->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        // Если платеж еще не обработан
-        if ($transaction->status === 'pending') {
-            $this->confirmPayment($transaction);
-        }
-
-        return view('balance.gateway', [
-            'transaction' => $transaction
-        ]);
+{
+    $transaction = Transaction::with('user')->findOrFail($transactionId);
+    
+    if ($transaction->user_id !== Auth::id()) {
+        abort(403);
     }
+
+    if ($transaction->status === Transaction::STATUS_PENDING) {
+        $this->confirmPayment($transaction);
+        $transaction->refresh();
+    }
+
+    return view('balance.gateway', [
+        'transaction' => $transaction,
+        'payment_method_name' => $this->getPaymentMethodName($transaction->payment_method)
+    ]);
+}
 
     /**
      * Подтверждение платежа

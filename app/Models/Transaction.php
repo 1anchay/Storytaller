@@ -19,8 +19,6 @@ class Transaction extends Model
         'description',
         'balance_before',
         'balance_after',
-        'transaction_id',
-        'metadata',
         'completed_at'
     ];
 
@@ -28,10 +26,10 @@ class Transaction extends Model
         'amount' => 'decimal:2',
         'balance_before' => 'decimal:2',
         'balance_after' => 'decimal:2',
-        'metadata' => 'array',
         'completed_at' => 'datetime'
     ];
 
+    // Отношения
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -48,4 +46,11 @@ class Transaction extends Model
     public const TYPE_WITHDRAWAL = 'withdrawal';
     public const TYPE_PAYMENT = 'payment';
     public const TYPE_REFUND = 'refund';
-}   
+
+    // Методы оплаты
+    public const METHOD_SBP = 'sbp';
+    public const METHOD_CARD = 'card';
+    public const METHOD_CRYPTO = 'crypto';
+    public const METHOD_QIWI = 'qiwi';
+    public const METHOD_YOOMONEY = 'yoomoney';
+}

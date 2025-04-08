@@ -112,11 +112,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/balance/topup', [BalanceController::class, 'showTopUpForm'])->name('balance.topup');
     Route::post('/balance/topup', [BalanceController::class, 'processTopUp'])->name('balance.process');
 });
-// Маршрут для отображения формы пополнения
-Route::get('/balance', [BalanceController::class, 'showForm'])->name('balance.form')->middleware('auth');
-
-// Маршрут для обработки пополнения
-Route::post('/balance/process', [BalanceController::class, 'processPayment'])->name('balance.process')->middleware('auth');
-
- // Изменяем на GET для payment.gateway
- Route::get('/payment/gateway/{transaction}', [BalanceController::class, 'paymentGateway'])->name('payment.gateway');
+Route::middleware(['auth'])->group(function () {
+    // Основные маршруты баланса
+    Route::get('/balance', [BalanceController::class, 'showForm'])->name('balance.form');
+    Route::post('/balance/process', [BalanceController::class, 'processPayment'])->name('balance.process');
+    
+    // Альтернативные маршруты (если нужны)
+    Route::get('/balance/topup', [BalanceController::class, 'showTopUpForm'])->name('balance.topup');
+    Route::post('/balance/topup/process', [BalanceController::class, 'processTopUp'])->name('balance.process.topup');
+    
+    // Платежный шлюз (GET)
+    Route::get('/payment/gateway/{transaction}', [BalanceController::class, 'paymentGateway'])
+        ->name('payment.gateway');
+});
