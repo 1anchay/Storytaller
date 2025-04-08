@@ -49,6 +49,22 @@
       <!-- Кнопки входа/регистрации/выхода -->
       <div class="flex items-center space-x-4">
         @if (Auth::check())
+          <!-- Баланс и пополнение -->
+          <div class="hidden md:flex items-center space-x-3 bg-gray-800/50 rounded-lg px-3 py-1.5 border border-gray-700 shadow-sm">
+            <div class="flex items-center space-x-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="font-medium text-white">{{ number_format(Auth::user()->balance ?? 0, 2) }} ₽</span>
+            </div>
+            <a href="{{ route('balance.topup') }}" class="text-xs bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-2 py-1 rounded transition-all duration-200 flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+    </svg>
+    Пополнить
+</a>
+          </div>
+
           <!-- Профиль пользователя -->
           <div class="hidden md:flex items-center space-x-3">
             <span class="text-sm font-medium text-gray-300">{{ Auth::user()->name }}</span>
@@ -107,6 +123,21 @@
     <!-- Мобильное меню (скрыто по умолчанию) -->
     <div id="mobile-menu" class="hidden md:hidden pb-4">
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        @if (Auth::check())
+          <!-- Баланс в мобильном меню -->
+          <div class="px-3 py-2 flex justify-between items-center bg-gray-800 rounded-lg mb-2">
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="font-medium text-white">Баланс: {{ number_format(Auth::user()->balance ?? 0, 2) }} ₽</span>
+            </div>
+            <a href="{{ route('balance.topup') }}" class="text-xs bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-2 py-1 rounded transition-all duration-200">
+              Пополнить
+            </a>
+          </div>
+        @endif
+        
         <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700/50 hover:text-cyan-300 flex items-center space-x-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
