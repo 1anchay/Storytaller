@@ -24,12 +24,12 @@
           <span>Главная</span>
         </a>
         
-        <a href="#" class="px-4 py-2 rounded-md font-medium flex items-center space-x-2 hover:bg-gray-700/50 hover:text-blue-300 transition-all duration-200 group">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400 group-hover:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          <span>О нас</span>
-        </a>
+        <a href="{{ route('store') }}" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700/50 hover:text-blue-300 flex items-center space-x-2">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+  </svg>
+  <span>Аккаунты</span>
+</a>
         
         <a href="#" class="px-4 py-2 rounded-md font-medium flex items-center space-x-2 hover:bg-gray-700/50 hover:text-purple-300 transition-all duration-200 group">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-400 group-hover:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,12 +145,12 @@
           <span>Главная</span>
         </a>
         
-        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700/50 hover:text-blue-300 flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          <span>О нас</span>
-        </a>
+        <a href="{{ route('store') }}" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700/50 hover:text-blue-300 flex items-center space-x-2">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+  </svg>
+  <span>Аккаунты</span>
+</a>
         
         <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700/50 hover:text-purple-300 flex items-center space-x-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

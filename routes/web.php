@@ -125,3 +125,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payment/gateway/{transaction}', [BalanceController::class, 'paymentGateway'])
         ->name('payment.gateway');
 });
+Route::get('/store', function () {
+    return view('store');
+})->name('store');
