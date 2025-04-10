@@ -1,4 +1,5 @@
-<footer class="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12 rounded-t-3xl shadow-2xl relative overflow-hidden">
+<footer class="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12 shadow-2xl relative overflow-hidden">
+    <!-- Убрал rounded-t-3xl -->
     <div class="max-w-7xl mx-auto px-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             <!-- Логотип и описание -->
@@ -138,9 +139,9 @@
                 © 2025 ReМайн. Все права защищены.
             </p>
             <div class="flex space-x-6">
-                <a href="#" class="text-gray-400 hover:text-cyan-400 text-sm transition duration-300">Политика конфиденциальности</a>
-                <a href="#" class="text-gray-400 hover:text-cyan-400 text-sm transition duration-300">Условия использования</a>
-                <a href="#" class="text-gray-400 hover:text-cyan-400 text-sm transition duration-300">Правовая информация</a>
+                <a href="{{ route('politika') }}" class="text-gray-400 hover:text-cyan-400 text-sm transition duration-300">Политика конфиденциальности</a>
+                <a href="{{ route('yslovya') }}" class="text-gray-400 hover:text-cyan-400 text-sm transition duration-300">Условия использования</a>
+                <a href="{{ route('prava') }}" class="text-gray-400 hover:text-cyan-400 text-sm transition duration-300">Правовая информация</a>
             </div>
         </div>
     </div>

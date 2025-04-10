@@ -5,8 +5,9 @@
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/heroicons@1.0.6/outline/index.js"></script>
-  </head>
-<div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+</head>
+
+<div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8 pb-20"> <!-- Добавил pb-20 для отступа -->
     <div class="max-w-4xl mx-auto">
         <!-- Заголовок страницы -->
         <div class="text-center mb-10">
@@ -16,7 +17,7 @@
 
         <!-- Основная карточка с формой -->
         <div class="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
-            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="p-6 sm:p-10">
+            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="p-6 sm:p-10" id="profile-form">
                 @csrf
                 @method('PUT')
 
@@ -117,7 +118,7 @@
                             @if (!$user->hasVerifiedEmail())
                                 <div class="mt-4 bg-gray-700 p-3 rounded-lg border border-gray-600">
                                     <p class="text-red-400 text-sm mb-2">Ваш email не подтверждён</p>
-                                    <form method="POST" action="{{ route('verification.send') }}">
+                                    <form method="POST" action="{{ route('verification.send') }}" id="verification-form">
                                         @csrf
                                         <button type="submit" class="text-cyan-400 hover:text-cyan-300 text-sm underline transition duration-300">
                                             Отправить письмо с подтверждением
@@ -162,14 +163,18 @@
                     </div>
                 </div>
 
-               <!-- Кнопки действий -->
-<div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
-    <a href="{{ route('profile.edit') }}" class="px-6 py-3 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition duration-300 text-center">
-        Отмена
-    </a>
-    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-600 hover:to-blue-700 transition duration-300 shadow-lg transform hover:scale-105">
-        Сохранить изменения
-    </button>
+                <!-- Кнопки действий -->
+                <div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
+                    <a href="{{ route('profile.show') }}" class="px-6 py-3 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition duration-300 text-center">
+                        Отмена
+                    </a>
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-600 hover:to-blue-700 transition duration-300 shadow-lg transform hover:scale-105">
+                        Сохранить изменения
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Модальное окно подтверждения email -->
@@ -192,6 +197,26 @@
     </div>
 </div>
 
+<!-- Модальное окно успешного сохранения -->
+<div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 max-w-sm w-full shadow-2xl">
+        <div class="text-center">
+            <svg class="mx-auto h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <h3 class="text-lg font-medium text-white mt-4">Изменения сохранены!</h3>
+            <p class="mt-2 text-sm text-gray-300">
+                Ваши данные профиля были успешно обновлены.
+            </p>
+            <div class="mt-6">
+                <button id="close-success-modal" class="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition duration-300">
+                    Понятно
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @include('footer')
 
 @section('scripts')
@@ -207,34 +232,67 @@
     }
 
     // Обработка отправки формы подтверждения email
-    document.querySelectorAll('form[action="{{ route('verification.send') }}"]').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            fetch(this.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById('verification-modal').classList.remove('hidden');
-                } else {
-                    alert('Произошла ошибка при отправке письма');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+    document.getElementById('verification-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        fetch(this.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('verification-modal').classList.remove('hidden');
+            } else {
                 alert('Произошла ошибка при отправке письма');
-            });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Произошла ошибка при отправке письма');
         });
     });
 
-    // Закрытие модального окна
-    document.getElementById('close-modal').addEventListener('click', function() {
+    // Обработка отправки формы профиля
+    document.getElementById('profile-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+            document.getElementById('success-modal').classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Произошла ошибка при сохранении изменений');
+        });
+    });
+
+    // Закрытие модальных окон
+    document.getElementById('close-modal')?.addEventListener('click', function() {
         document.getElementById('verification-modal').classList.add('hidden');
+    });
+    
+    document.getElementById('close-success-modal')?.addEventListener('click', function() {
+        document.getElementById('success-modal').classList.add('hidden');
+        window.location.reload(); // Обновляем страницу после сохранения
     });
 </script>
 @endsection

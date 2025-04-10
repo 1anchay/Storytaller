@@ -128,3 +128,12 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/store', function () {
     return view('store');
 })->name('store');
+Route::get('/politika', function () {
+    return view('politika');
+})->name('politika');
+Route::get('/prava', function () {
+    return view('prava');
+})->name('prava');
+Route::get('/yslovya', function () {
+    return view('yslovya');
+})->name('yslovya');
