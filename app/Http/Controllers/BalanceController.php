@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class BalanceController extends Controller
 {
@@ -68,23 +69,23 @@ class BalanceController extends Controller
      * Платежный шлюз (GET версия)
      */
     public function paymentGateway($transactionId)
-{
-    $transaction = Transaction::with('user')->findOrFail($transactionId);
-    
-    if ($transaction->user_id !== Auth::id()) {
-        abort(403);
-    }
+    {
+        $transaction = Transaction::with('user')->findOrFail($transactionId);
+        
+        if ($transaction->user_id !== Auth::id()) {
+            abort(403);
+        }
 
-    if ($transaction->status === Transaction::STATUS_PENDING) {
-        $this->confirmPayment($transaction);
-        $transaction->refresh();
-    }
+        if ($transaction->status === Transaction::STATUS_PENDING) {
+            $this->confirmPayment($transaction);
+            $transaction->refresh();
+        }
 
-    return view('balance.gateway', [
-        'transaction' => $transaction,
-        'payment_method_name' => $this->getPaymentMethodName($transaction->payment_method)
-    ]);
-}
+        return view('balance.gateway', [
+            'transaction' => $transaction,
+            'payment_method_name' => $this->getPaymentMethodName($transaction->payment_method)
+        ]);
+    }
 
     /**
      * Подтверждение платежа
@@ -102,6 +103,103 @@ class BalanceController extends Controller
                 'balance_after' => $user->balance
             ]);
         });
+    }
+
+    /**
+     * Списание баланса
+     */
+    public function deductBalance(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'required|string|max:255',
+            'service_id' => 'nullable|integer', // если списание связано с конкретным сервисом
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = Auth::user();
+        $amount = $request->amount;
+
+        if ($user->balance < $amount) {
+            return response()->json(['error' => 'Недостаточно средств на балансе'], 400);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Создаем транзакцию на списание
+            $transaction = Transaction::create([
+                'user_id' => $user->id,
+                'amount' => $amount,
+                'type' => 'withdrawal',
+                'status' => 'completed',
+                'description' => $request->description,
+                'service_id' => $request->service_id,
+                'balance_before' => $user->balance,
+                'balance_after' => $user->balance - $amount,
+                'completed_at' => now()
+            ]);
+
+            // Обновляем баланс пользователя
+            $user->balance -= $amount;
+            $user->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'new_balance' => $user->balance,
+                'transaction_id' => $transaction->id
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Ошибка при списании средств: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Проверка достаточности баланса
+     */
+    public function checkBalance(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0.01'
+        ]);
+
+        $user = Auth::user();
+        $hasEnough = $user->balance >= $request->amount;
+
+        return response()->json([
+            'has_enough' => $hasEnough,
+            'current_balance' => $user->balance,
+            'required_amount' => $request->amount
+        ]);
+    }
+
+    /**
+     * Получить историю транзакций
+     */
+    public function getTransactionHistory(Request $request)
+    {
+        $transactions = Transaction::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return response()->json($transactions);
+    }
+
+    /**
+     * Получить текущий баланс
+     */
+    public function getCurrentBalance()
+    {
+        return response()->json([
+            'balance' => Auth::user()->balance
+        ]);
     }
 
     /**

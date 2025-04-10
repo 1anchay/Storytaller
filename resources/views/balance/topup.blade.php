@@ -5,7 +5,10 @@
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/heroicons@1.0.6/outline/index.js"></script>
-  </head>
+    <!-- Подключаем API для генерации QR-кодов -->
+    <script src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=example"></script>
+</head>
+
 <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md mx-auto bg-gray-800 rounded-xl shadow-lg overflow-hidden md:max-w-2xl transform transition-all hover:shadow-2xl">
         <div class="p-8">
@@ -30,7 +33,7 @@
                 <div class="border-b border-gray-700 opacity-50"></div>
             </div>
 
-            <form action="{{ route('balance.process') }}" method="POST">
+            <form id="paymentForm" action="{{ route('balance.process') }}" method="POST">
                 @csrf
                 
                 <!-- Поле для суммы -->
@@ -44,7 +47,7 @@
                         </div>
                         <input type="number" id="amount" name="amount" min="10" step="10" value="100"
                                class="block w-full pl-10 pr-12 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 placeholder-gray-400"
-                               placeholder="0.00">
+                               placeholder="0.00" required>
                         <div class="absolute inset-y-0 right-0 flex items-center">
                             <span class="text-gray-400 px-3">RUB</span>
                         </div>
@@ -64,7 +67,7 @@
                     <div class="space-y-3">
                         <!-- СБП -->
                         <div class="group">
-                            <input id="sbp" name="payment_method" type="radio" value="sbp" class="hidden peer" checked>
+                            <input id="sbp" name="payment_method" type="radio" value="sbp" class="hidden peer">
                             <label for="sbp" class="flex items-center p-4 bg-gray-700/50 border border-gray-700 rounded-lg cursor-pointer peer-checked:border-amber-500 peer-checked:bg-gray-700 group-hover:bg-gray-700 transition-all">
                                 <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-600 rounded-lg">
                                     <img src="https://qr.nspk.ru/proxyapp/logo.png" alt="СБП" class="h-5">
@@ -98,18 +101,19 @@
                             </label>
                         </div>
 
-                        <!-- Криптовалюта (пример) -->
+                        <!-- FPIBank -->
                         <div class="group">
-                            <input id="crypto" name="payment_method" type="radio" value="crypto" class="hidden peer">
-                            <label for="crypto" class="flex items-center p-4 bg-gray-700/50 border border-gray-700 rounded-lg cursor-pointer peer-checked:border-amber-500 peer-checked:bg-gray-700 group-hover:bg-gray-700 transition-all">
-                                <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-yellow-600 rounded-lg">
+                            <input id="fpibank" name="payment_method" type="radio" value="fpibank" class="hidden peer" checked>
+                            <label for="fpibank" class="flex items-center p-4 bg-gray-700/50 border border-gray-700 rounded-lg cursor-pointer peer-checked:border-amber-500 peer-checked:bg-gray-700 group-hover:bg-gray-700 transition-all">
+                                <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-green-600 rounded-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 15h.01M11 15h.01" />
                                     </svg>
                                 </div>
                                 <div class="ml-4">
-                                    <h3 class="text-white font-medium">Криптовалюта</h3>
-                                    <p class="text-xs text-gray-400">Bitcoin, Ethereum, USDT</p>
+                                    <h3 class="text-white font-medium">FPIBank</h3>
+                                    <p class="text-xs text-gray-400">Оплата по QR-коду</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="ml-auto h-5 w-5 text-transparent peer-checked:text-amber-500" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -120,7 +124,7 @@
                 </div>
 
                 <!-- Кнопка оплаты -->
-                <button type="submit" class="w-full group relative flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all">
+                <button type="button" id="payButton" class="w-full group relative flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all active:scale-95">
                     <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-200 group-hover:text-white" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
@@ -134,9 +138,116 @@
                     </span>
                 </button>
             </form>
+
+            <!-- Модальное окно с QR-кодом -->
+            <div id="qrModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+                <div class="bg-gray-800 rounded-xl p-6 max-w-sm w-full mx-4 border border-amber-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-white">Оплата через FPIBank</h3>
+                        <button id="closeQrModal" class="text-gray-400 hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="text-center mb-4">
+                        <p class="text-gray-300 mb-2">Отсканируйте QR-код для оплаты</p>
+                        <img id="dynamicQrCode" src="" alt="QR Code" class="mx-auto mb-4 p-2 bg-white rounded-lg">
+                        <p class="text-gray-400 text-sm">Сумма: <span id="qrAmount" class="text-amber-400 font-medium">100 ₽</span></p>
+                    </div>
+                    
+                    <div class="bg-gray-700 rounded-lg p-4 mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-gray-400">Статус:</span>
+                            <span id="paymentStatus" class="text-yellow-400 font-medium">Ожидание оплаты...</span>
+                        </div>
+                        <div class="w-full bg-gray-600 rounded-full h-2.5">
+                            <div id="paymentProgress" class="bg-amber-500 h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <button id="cancelPayment" class="w-full py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition">
+                        Отменить оплату
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @include('footer')
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const payButton = document.getElementById('payButton');
+    const qrModal = document.getElementById('qrModal');
+    const closeQrModal = document.getElementById('closeQrModal');
+    const cancelPayment = document.getElementById('cancelPayment');
+    const paymentForm = document.getElementById('paymentForm');
+    const qrAmount = document.getElementById('qrAmount');
+    const paymentStatus = document.getElementById('paymentStatus');
+    const paymentProgress = document.getElementById('paymentProgress');
+    const dynamicQrCode = document.getElementById('dynamicQrCode');
+    
+    let paymentCheckInterval;
+
+    payButton.addEventListener('click', function() {
+        const amount = document.getElementById('amount').value;
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+        
+        if (paymentMethod === 'fpibank') {
+            // Показываем модальное окно с QR-кодом
+            qrAmount.textContent = amount + ' ₽';
+            qrModal.classList.remove('hidden');
+            
+            // Генерируем QR-код через российский сервис
+            const qrData = encodeURIComponent(
+                `FPIBank Payment|Amount:${amount}|Account:{{ auth()->user()->id }}`
+            );
+            dynamicQrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}`;
+            
+            // Симуляция проверки статуса платежа
+            simulatePaymentCheck();
+        } else {
+            // Для других методов оплаты отправляем форму напрямую
+            paymentForm.submit();
+        }
+    });
+    
+    closeQrModal.addEventListener('click', function() {
+        qrModal.classList.add('hidden');
+        clearInterval(paymentCheckInterval);
+    });
+    
+    cancelPayment.addEventListener('click', function() {
+        qrModal.classList.add('hidden');
+        clearInterval(paymentCheckInterval);
+    });
+    
+    function simulatePaymentCheck() {
+        let progress = 0;
+        paymentCheckInterval = setInterval(function() {
+            progress += 5;
+            if (progress > 100) progress = 100;
+            
+            paymentProgress.style.width = progress + '%';
+            
+            if (progress === 100) {
+                paymentStatus.textContent = 'Оплата получена!';
+                paymentStatus.className = 'text-green-400 font-medium';
+                
+                // Через 2 секунды отправляем форму
+                setTimeout(function() {
+                    qrModal.classList.add('hidden');
+                    paymentForm.submit();
+                }, 2000);
+                
+                clearInterval(paymentCheckInterval);
+            }
+        }, 1000);
+    }
+});
+</script>
 @endsection

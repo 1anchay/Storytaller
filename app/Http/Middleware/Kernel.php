@@ -61,5 +61,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // Здесь можно добавлять другие middleware, например для проверки администраторов
         'admin' => \App\Http\Middleware\IsAdmin::class, // Пример для проверки роли администратора
+        'truly_verified' => \App\Http\Middleware\EnsureUserTrulyVerified::class,
     ];
 }

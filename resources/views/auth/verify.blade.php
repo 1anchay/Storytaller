@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/heroicons@1.0.6/outline/index.js"></script>
+  </head>
 <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8 flex items-center">
     <div class="max-w-md mx-auto w-full">
         <!-- Логотип -->
