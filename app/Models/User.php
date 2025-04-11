@@ -69,13 +69,24 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getProfilePhotoUrlAttribute(): string
-    {
-        if ($this->profile_photo_path) {
+{
+    if ($this->profile_photo_path) {
+        // Проверяем, является ли путь уже полным URL (например, от социальных сетей)
+        if (filter_var($this->profile_photo_path, FILTER_VALIDATE_URL)) {
+            return $this->profile_photo_path;
+        }
+        
+        // Проверяем существование файла
+        if (Storage::disk('public')->exists($this->profile_photo_path)) {
             return Storage::disk('public')->url($this->profile_photo_path);
         }
-
-        return $this->defaultProfilePhotoUrl();
+        
+        // Логируем проблему, если файл не найден
+        \Log::warning("Profile photo not found: " . $this->profile_photo_path);
     }
+    
+    return $this->defaultProfilePhotoUrl();
+}
 
     protected function defaultProfilePhotoUrl(): string
     {
