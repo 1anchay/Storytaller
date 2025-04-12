@@ -53,40 +53,32 @@ class User extends Authenticatable implements MustVerifyEmail
         parent::boot();
 
         static::creating(function ($user) {
-            $user->uuid = Str::uuid();
-            $user->is_active = true;
+            $user->uuid = Str::uuid()->toString();
+            $user->is_active = $user->is_active ?? true;
         });
     }
 
     public function hasVerifiedEmail(): bool
     {
-        return true;
-    }
-
-    public function hasTrulyVerifiedEmail(): bool
-    {
         return !is_null($this->email_verified_at);
     }
 
     public function getProfilePhotoUrlAttribute(): string
-{
-    if ($this->profile_photo_path) {
-        // Проверяем, является ли путь уже полным URL (например, от социальных сетей)
-        if (filter_var($this->profile_photo_path, FILTER_VALIDATE_URL)) {
-            return $this->profile_photo_path;
+    {
+        if ($this->profile_photo_path) {
+            if (filter_var($this->profile_photo_path, FILTER_VALIDATE_URL)) {
+                return $this->profile_photo_path;
+            }
+            
+            if (Storage::disk('public')->exists($this->profile_photo_path)) {
+                return Storage::disk('public')->url($this->profile_photo_path);
+            }
+            
+            \Log::warning("Profile photo not found for user {$this->id}: {$this->profile_photo_path}");
         }
         
-        // Проверяем существование файла
-        if (Storage::disk('public')->exists($this->profile_photo_path)) {
-            return Storage::disk('public')->url($this->profile_photo_path);
-        }
-        
-        // Логируем проблему, если файл не найден
-        \Log::warning("Profile photo not found: " . $this->profile_photo_path);
+        return $this->defaultProfilePhotoUrl();
     }
-    
-    return $this->defaultProfilePhotoUrl();
-}
 
     protected function defaultProfilePhotoUrl(): string
     {
@@ -99,19 +91,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getInitialsAttribute(): string
     {
-        $names = explode(' ', $this->name);
-        $initials = '';
-
-        foreach ($names as $name) {
-            $initials .= strtoupper(substr($name, 0, 1));
-        }
-
-        return substr($initials, 0, 2);
+        return collect(explode(' ', $this->name))
+            ->map(fn ($name) => mb_substr($name, 0, 1, 'UTF-8'))
+            ->take(2)
+            ->join('')
+            ->upper();
     }
 
-    public function updateBalance(float $amount, string $type = 'deposit', string $description = null): self
+    public function updateBalance(float $amount, string $type = 'deposit', ?string $description = null): self
     {
-        if ($type === 'withdrawal' && $this->balance < $amount) {
+        if ($type === 'withdrawal' && !$this->hasSufficientBalance($amount)) {
             throw new \RuntimeException('Insufficient funds');
         }
 
@@ -136,16 +125,15 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected function getDefaultTransactionDescription(string $type): string
     {
-        $descriptions = [
+        return match($type) {
             'deposit' => 'Пополнение баланса',
             'withdrawal' => 'Списание средств',
             'payment' => 'Оплата услуг',
             'refund' => 'Возврат средств',
             'bonus' => 'Бонусные средства',
             'penalty' => 'Штрафные санкции',
-        ];
-
-        return $descriptions[$type] ?? 'Транзакция';
+            default => 'Транзакция',
+        };
     }
 
     public function isAdmin(): bool
@@ -170,7 +158,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class)->latest();
     }
 
     public function markEmailAsVerified(): bool

@@ -6,39 +6,47 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\CaseItem;
+use App\Models\UserGame;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class BalanceController extends Controller
 {
+    // Константы для типов транзакций
+    const TYPE_DEPOSIT = 'deposit';
+    const TYPE_WITHDRAWAL = 'withdrawal';
+    const TYPE_CASE_PURCHASE = 'case_purchase';
+    const TYPE_CASE_REWARD = 'case_reward';
+
+    // Константы статусов
+    const STATUS_PENDING = 'pending';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_FAILED = 'failed';
+
     /**
-     * Показать основную форму пополнения баланса
+     * Основная форма пополнения баланса
      */
     public function showForm()
     {
         return view('balance.topup', [
             'user' => Auth::user(),
-            'min_amount' => 10,
-            'max_amount' => 100000
+            'min_amount' => config('balance.min_topup', 10),
+            'max_amount' => config('balance.max_topup', 100000),
+            'payment_methods' => $this->getAvailablePaymentMethods()
         ]);
     }
 
     /**
-     * Показать альтернативную форму пополнения (если нужна)
-     */
-    public function showTopUpForm()
-    {
-        return $this->showForm(); // Перенаправляем на основную форму
-    }
-
-    /**
-     * Обработка пополнения баланса (основной метод)
+     * Обработка пополнения баланса
      */
     public function processPayment(Request $request)
     {
         $validated = $request->validate([
-            'amount' => 'required|numeric|min:10|max:100000',
-            'payment_method' => 'required|in:sbp,card,crypto,qiwi,yoomoney'
+            'amount' => 'required|numeric|min:' . config('balance.min_topup', 10) . 
+                       '|max:' . config('balance.max_topup', 100000),
+            'payment_method' => 'required|in:' . implode(',', array_keys($this->getAvailablePaymentMethods()))
         ]);
 
         $user = Auth::user();
@@ -47,36 +55,27 @@ class BalanceController extends Controller
             'user_id' => $user->id,
             'amount' => $validated['amount'],
             'payment_method' => $validated['payment_method'],
-            'type' => 'deposit',
-            'status' => 'pending',
+            'type' => self::TYPE_DEPOSIT,
+            'status' => self::STATUS_PENDING,
             'balance_before' => $user->balance,
-            'balance_after' => $user->balance + $validated['amount']
+            'balance_after' => $user->balance + $validated['amount'],
+            'transaction_id' => Str::uuid()
         ]);
 
-        // Перенаправляем на платежный шлюз
         return redirect()->route('payment.gateway', $transaction->id);
     }
 
     /**
-     * Альтернативный обработчик (если нужен)
-     */
-    public function processTopUp(Request $request)
-    {
-        return $this->processPayment($request);
-    }
-
-    /**
-     * Платежный шлюз (GET версия)
+     * Платежный шлюз
      */
     public function paymentGateway($transactionId)
     {
-        $transaction = Transaction::with('user')->findOrFail($transactionId);
+        $transaction = Transaction::with('user')
+                        ->findOrFail($transactionId);
         
-        if ($transaction->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $transaction);
 
-        if ($transaction->status === Transaction::STATUS_PENDING) {
+        if ($transaction->status === self::STATUS_PENDING) {
             $this->confirmPayment($transaction);
             $transaction->refresh();
         }
@@ -98,7 +97,7 @@ class BalanceController extends Controller
             $user->save();
 
             $transaction->update([
-                'status' => 'completed',
+                'status' => self::STATUS_COMPLETED,
                 'completed_at' => now(),
                 'balance_after' => $user->balance
             ]);
@@ -106,63 +105,7 @@ class BalanceController extends Controller
     }
 
     /**
-     * Списание баланса
-     */
-    public function deductBalance(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'amount' => 'required|numeric|min:0.01',
-            'description' => 'required|string|max:255',
-            'service_id' => 'nullable|integer', // если списание связано с конкретным сервисом
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = Auth::user();
-        $amount = $request->amount;
-
-        if ($user->balance < $amount) {
-            return response()->json(['error' => 'Недостаточно средств на балансе'], 400);
-        }
-
-        try {
-            DB::beginTransaction();
-
-            // Создаем транзакцию на списание
-            $transaction = Transaction::create([
-                'user_id' => $user->id,
-                'amount' => $amount,
-                'type' => 'withdrawal',
-                'status' => 'completed',
-                'description' => $request->description,
-                'service_id' => $request->service_id,
-                'balance_before' => $user->balance,
-                'balance_after' => $user->balance - $amount,
-                'completed_at' => now()
-            ]);
-
-            // Обновляем баланс пользователя
-            $user->balance -= $amount;
-            $user->save();
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'new_balance' => $user->balance,
-                'transaction_id' => $transaction->id
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Ошибка при списании средств: ' . $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Проверка достаточности баланса
+     * Проверка баланса для API
      */
     public function checkBalance(Request $request)
     {
@@ -174,47 +117,191 @@ class BalanceController extends Controller
         $hasEnough = $user->balance >= $request->amount;
 
         return response()->json([
-            'has_enough' => $hasEnough,
+            'success' => $hasEnough,
             'current_balance' => $user->balance,
-            'required_amount' => $request->amount
-        ]);
+            'required_amount' => $request->amount,
+            'message' => $hasEnough ? 'Достаточно средств' : 'Недостаточно средств'
+        ], $hasEnough ? 200 : 402);
     }
 
     /**
-     * Получить историю транзакций
+     * Покупка кейса
+     */
+    public function purchaseCase(Request $request)
+    {
+        $request->validate([
+            'case_id' => 'required|exists:case_items,id'
+        ]);
+
+        $user = Auth::user();
+        $case = CaseItem::find($request->case_id);
+        $casePrice = $case->price;
+
+        if ($user->balance < $casePrice) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Недостаточно средств для покупки кейса'
+            ], 402);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Списание средств
+            $user->balance -= $casePrice;
+            $user->save();
+
+            // Создаем транзакцию
+            $transaction = Transaction::create([
+                'user_id' => $user->id,
+                'amount' => $casePrice,
+                'type' => self::TYPE_CASE_PURCHASE,
+                'status' => self::STATUS_COMPLETED,
+                'description' => 'Покупка кейса: ' . $case->name,
+                'balance_before' => $user->balance + $casePrice,
+                'balance_after' => $user->balance,
+                'completed_at' => now(),
+                'metadata' => [
+                    'case_id' => $case->id,
+                    'case_name' => $case->name
+                ]
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'new_balance' => $user->balance,
+                'transaction_id' => $transaction->id,
+                'message' => 'Кейс успешно приобретен',
+                'case' => $case
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Ошибка при покупке кейса: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Открытие кейса
+     */
+    public function openCase(Request $request)
+    {
+        $request->validate([
+            'case_id' => 'required|exists:case_items,id'
+        ]);
+
+        $user = Auth::user();
+        $case = CaseItem::with('possibleRewards')->find($request->case_id);
+
+        try {
+            DB::beginTransaction();
+
+            // Определяем выигрыш
+            $reward = $this->determineReward($case);
+            
+            // Записываем игру пользователю
+            UserGame::create([
+                'user_id' => $user->id,
+                'game_id' => $reward->id,
+                'case_id' => $case->id,
+                'acquired_at' => now()
+            ]);
+
+            // Создаем транзакцию для награды
+            $transaction = Transaction::create([
+                'user_id' => $user->id,
+                'amount' => $reward->value,
+                'type' => self::TYPE_CASE_REWARD,
+                'status' => self::STATUS_COMPLETED,
+                'description' => 'Выигрыш из кейса: ' . $reward->name,
+                'balance_before' => $user->balance,
+                'balance_after' => $user->balance,
+                'completed_at' => now(),
+                'metadata' => [
+                    'case_id' => $case->id,
+                    'reward_id' => $reward->id,
+                    'reward_name' => $reward->name,
+                    'reward_value' => $reward->value
+                ]
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'reward' => $reward,
+                'transaction_id' => $transaction->id,
+                'message' => 'Поздравляем с выигрышем!'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Ошибка при открытии кейса: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Определение награды из кейса
+     */
+    protected function determineReward(CaseItem $case)
+    {
+        $rewards = $case->possibleRewards;
+        $totalWeight = $rewards->sum('probability');
+        $random = mt_rand(1, $totalWeight);
+        $current = 0;
+
+        foreach ($rewards as $reward) {
+            $current += $reward->probability;
+            if ($random <= $current) {
+                return $reward;
+            }
+        }
+
+        return $rewards->first(); // fallback
+    }
+
+    /**
+     * История транзакций
      */
     public function getTransactionHistory(Request $request)
     {
         $transactions = Transaction::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate($request->get('per_page', 10));
 
-        return response()->json($transactions);
-    }
-
-    /**
-     * Получить текущий баланс
-     */
-    public function getCurrentBalance()
-    {
         return response()->json([
-            'balance' => Auth::user()->balance
+            'success' => true,
+            'data' => $transactions
         ]);
     }
 
     /**
-     * Получить название платежного метода
+     * Доступные методы оплаты
      */
-    protected function getPaymentMethodName($method)
+    protected function getAvailablePaymentMethods()
     {
-        $methods = [
+        return [
             'sbp' => 'СБП',
-            'card' => 'Банковская карта', 
+            'card' => 'Банковская карта',
             'crypto' => 'Криптовалюта',
             'qiwi' => 'QIWI',
             'yoomoney' => 'ЮMoney'
         ];
+    }
 
-        return $methods[$method] ?? $method;
+    /**
+     * Название платежного метода
+     */
+    protected function getPaymentMethodName($method)
+    {
+        return $this->getAvailablePaymentMethods()[$method] ?? $method;
     }
 }
