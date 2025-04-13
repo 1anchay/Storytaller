@@ -7,7 +7,8 @@ use App\Http\Controllers\{
     ProfileController,
     BalanceController,
     AdminController,
-    ChatController
+    ChatController,
+    HomeController
 };
 use App\Http\Controllers\Auth\{
     AuthenticatedSessionController,
@@ -21,136 +22,123 @@ use App\Http\Controllers\Auth\{
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Здесь вы можете зарегистрировать веб-маршруты для вашего приложения.
-|
 */
 
-// Главная страница
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
-// Статические страницы
-Route::get('/store', function () {
-    return view('store');
-})->name('store');
-
-Route::get('/politika', function () {
-    return view('politika');
-})->name('politika');
-
-Route::get('/prava', function () {
-    return view('prava');
-})->name('prava');
-
-Route::get('/yslovya', function () {
-    return view('yslovya');
-})->name('yslovya');
-
-// Кейсы (доступны всем)
-Route::prefix('cases')->group(function () {
-    Route::get('/case1', function() { return view('cases.case1'); })->name('case1');
-    Route::get('/case2', function() { return view('cases.case2'); })->name('case2');
-    Route::get('/case3', function() { return view('cases.case3'); })->name('case3');
-    Route::get('/case4', function() { return view('cases.case4'); })->name('case4');
-    Route::get('/case5', function() { return view('cases.case5'); })->name('case5');
-    Route::get('/case6', function() { return view('cases.case6'); })->name('case6');
-    Route::get('/case7', function() { return view('cases.case7'); })->name('case7');
-    Route::get('/case8', function() { return view('cases.case8'); })->name('case8');
+// Главная и статические страницы
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::get('/home', 'index')->name('home.alt');
+    Route::get('/store', 'store')->name('store');
+    Route::get('/politika', 'politika')->name('politika');
+    Route::get('/prava', 'prava')->name('prava');
+    Route::get('/yslovya', 'yslovya')->name('yslovya');
 });
 
-// Гостевые маршруты (для неавторизованных)
+// Публичные кейсы (оптимизированная версия)
+Route::prefix('cases')->name('cases.')->controller(CaseController::class)->group(function () {
+    for ($i = 1; $i <= 8; $i++) {
+        Route::get("/case{$i}", "showCase{$i}")->name("case{$i}");
+    }
+});
+
+// Гостевые маршруты
 Route::middleware('guest')->group(function () {
     // Аутентификация
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::controller(AuthenticatedSessionController::class)->group(function () {
+        Route::get('login', 'create')->name('login');
+        Route::post('login', 'store');
+    });
     
     // Регистрация
-    Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('register', [RegisteredUserController::class, 'store']);
+    Route::controller(RegisteredUserController::class)->group(function () {
+        Route::get('register', 'create')->name('register');
+        Route::post('register', 'store');
+    });
     
     // Сброс пароля
-    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+    Route::controller(ForgotPasswordController::class)->name('password.')->group(function () {
+        Route::get('forgot-password', 'showLinkRequestForm')->name('request');
+        Route::post('forgot-password', 'sendResetLinkEmail')->name('email');
+    });
+    
+    Route::controller(ResetPasswordController::class)->group(function () {
+        Route::get('reset-password/{token}', 'showResetForm')->name('password.reset');
+        Route::post('reset-password', 'reset')->name('password.update');
+    });
 });
 
-// Маршруты подтверждения email
-Route::middleware('auth')->group(function () {
-    Route::get('/email/verify', [VerificationController::class, 'show'])
-        ->name('verification.notice');
-        
-    Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-        ->middleware('signed')
-        ->name('verification.verify');
-        
-    Route::post('/email/resend', [VerificationController::class, 'resend'])
-        ->name('verification.send');
+// Подтверждение email
+Route::middleware('auth')->controller(VerificationController::class)->group(function () {
+    Route::get('/email/verify', 'show')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', 'verify')->middleware('signed')->name('verification.verify');
+    Route::post('/email/resend', 'resend')->name('verification.send');
 });
 
-// Защищенные маршруты (требуют авторизации)
+// Авторизованные маршруты
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Профиль пользователя
-    Route::prefix('profile')->group(function () {
-        Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
-        Route::get('/transactions', [ProfileController::class, 'transactionHistory'])->name('profile.transactions');
+    // Профиль
+    Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
+        Route::get('/edit', 'edit')->name('edit');
+        Route::put('/update', 'update')->name('update');
+        Route::get('/transactions', 'transactionHistory')->name('transactions');
     });
 
-    // Баланс и платежи
-    Route::prefix('balance')->group(function () {
-        Route::get('/', [BalanceController::class, 'showForm'])->name('balance.form');
-        Route::post('/process', [BalanceController::class, 'processPayment'])->name('balance.process');
-        Route::get('/topup', [BalanceController::class, 'showTopUpForm'])->name('balance.topup');
-        Route::post('/topup/process', [BalanceController::class, 'processTopUp'])->name('balance.process.topup');
-        Route::get('/gateway/{transaction}', [BalanceController::class, 'paymentGateway'])
-            ->name('payment.gateway');
+    // Баланс
+    Route::controller(BalanceController::class)->prefix('balance')->name('balance.')->group(function () {
+        Route::get('/', 'showForm')->name('form');
+        Route::post('/process', 'processPayment')->name('process');
+        Route::get('/topup', 'showTopUpForm')->name('topup');
+        Route::post('/topup/process', 'processTopUp')->name('process.topup');
+        Route::get('/gateway/{transaction}', 'paymentGateway')->name('gateway');
     });
 
-    // Кейсы (функционал)
-    Route::prefix('cases')->group(function () {
-        Route::get('/', [CaseController::class, 'index'])->name('cases.index');
-        Route::get('/create', [CaseController::class, 'create'])->name('cases.create');
-        Route::post('/', [CaseController::class, 'store'])->name('cases.store');
-        Route::get('/{case}', [CaseController::class, 'show'])->name('cases.show');
-        Route::get('/buy/{case}', [CaseController::class, 'buy'])->name('cases.buy');
-        Route::post('/check-balance', [CaseController::class, 'checkBalance'])->name('cases.check-balance');
-        Route::post('/purchase-case', [CaseController::class, 'purchaseCase'])->name('cases.purchase');
+    // Кейсы (защищенные)
+    Route::controller(CaseController::class)->prefix('cases')->name('cases.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{case}', 'show')->name('show');
+        Route::get('/buy/{case}', 'buy')->name('buy');
+        Route::post('/check-balance', 'checkBalance')->name('check-balance');
+        Route::post('/purchase-case', 'purchaseCase')->name('purchase');
     });
 
     // Чат
-    Route::prefix('chat')->group(function () {
-        Route::post('/send', [ChatController::class, 'sendMessage'])->name('chat.send');
-        Route::get('/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::controller(ChatController::class)->prefix('chat')->name('chat.')->group(function () {
+        Route::post('/send', 'sendMessage')->name('send');
+        Route::get('/messages', 'getMessages')->name('messages');
     });
 
     // Dashboard
-    Route::get('/dashboard', function () {
-        return redirect()->route('profile.edit');
-    })->name('dashboard');
+    Route::get('/dashboard', fn() => redirect()->route('profile.edit'))->name('dashboard');
 });
 
-// Админка (требует прав администратора)
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
-    Route::get('/chat', [ChatController::class, 'getAdminMessages'])->name('admin.chat');
-    Route::post('/chat/send', [ChatController::class, 'sendAdminMessage'])->name('admin.chat.send');
+// Админка
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::controller(AdminController::class)->group(function () {
+        Route::get('/dashboard', 'dashboard')->name('dashboard');
+        Route::get('/users', 'users')->name('users');
+        Route::get('/transactions', 'transactions')->name('transactions');
+        Route::get('/cases', 'cases')->name('cases');
+    });
+    
+    Route::controller(ChatController::class)->prefix('chat')->name('chat.')->group(function () {
+        Route::get('/', 'getAdminMessages')->name('index');
+        Route::post('/send', 'sendAdminMessage')->name('send');
+    });
 });
-
-// React маршруты
+Route::get('/case1', function() { return view('cases.case1'); })->name('case1');
+Route::get('/case2', function() { return view('cases.case2'); })->name('case2');
+Route::get('/case3', function() { return view('cases.case3'); })->name('case3');
+Route::get('/case4', function() { return view('cases.case4'); })->name('case4');
+Route::get('/case5', function() { return view('cases.case5'); })->name('case5');
+Route::get('/case6', function() { return view('cases.case6'); })->name('case6');
+Route::get('/case7', function() { return view('cases.case7'); })->name('case7');
+Route::get('/case8', function() { return view('cases.case8'); })->name('case8');
+// React
 Route::get('/react', [ReactController::class, 'index'])->name('react');
 
-// Выход из системы
+// Выход
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

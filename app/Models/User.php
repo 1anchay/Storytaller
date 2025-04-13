@@ -6,170 +6,123 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'profile_photo_path',
         'role',
+        'is_active',
         'balance',
         'last_login_at',
         'last_login_ip',
-        'uuid',
-        'is_active',
-        'locale',
+        'email_verification_token',
+        'phone',
+        'avatar'
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
+        'email_verification_token',  // Хорошо скрыто, так как токен подтверждения должен быть скрыт
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',
-        'password' => 'hashed',
-        'balance' => 'decimal:2',
         'is_active' => 'boolean',
+        'balance' => 'decimal:2',  // Если у тебя есть дробные значения для баланса, это ок
     ];
 
-    protected $appends = [
-        'profile_photo_url',
-        'initials',
+    /**
+     * Default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'is_active' => true,  // По умолчанию пользователь активен
+        'balance' => 0,       // Баланс по умолчанию 0
+        'role' => 'user',     // Роль по умолчанию — "user"
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($user) {
-            $user->uuid = Str::uuid()->toString();
-            $user->is_active = $user->is_active ?? true;
-        });
-    }
-
-    public function hasVerifiedEmail(): bool
-    {
-        return !is_null($this->email_verified_at);
-    }
-
-    public function getProfilePhotoUrlAttribute(): string
-    {
-        if ($this->profile_photo_path) {
-            if (filter_var($this->profile_photo_path, FILTER_VALIDATE_URL)) {
-                return $this->profile_photo_path;
-            }
-            
-            if (Storage::disk('public')->exists($this->profile_photo_path)) {
-                return Storage::disk('public')->url($this->profile_photo_path);
-            }
-            
-            \Log::warning("Profile photo not found for user {$this->id}: {$this->profile_photo_path}");
-        }
-        
-        return $this->defaultProfilePhotoUrl();
-    }
-
-    protected function defaultProfilePhotoUrl(): string
-    {
-        $name = trim(collect(explode(' ', $this->name))->map(function ($segment) {
-            return mb_substr($segment, 0, 1);
-        })->join(' '));
-
-        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=7F9CF5&background=EBF4FF';
-    }
-
-    public function getInitialsAttribute(): string
-    {
-        return collect(explode(' ', $this->name))
-            ->map(fn ($name) => mb_substr($name, 0, 1, 'UTF-8'))
-            ->take(2)
-            ->join('')
-            ->upper();
-    }
-
-    public function updateBalance(float $amount, string $type = 'deposit', ?string $description = null): self
-    {
-        if ($type === 'withdrawal' && !$this->hasSufficientBalance($amount)) {
-            throw new \RuntimeException('Insufficient funds');
-        }
-
-        return \DB::transaction(function () use ($amount, $type, $description) {
-            $balanceBefore = $this->balance;
-            $this->balance += ($type === 'deposit') ? $amount : -$amount;
-            $this->save();
-
-            $this->transactions()->create([
-                'amount' => $amount,
-                'type' => $type,
-                'status' => 'completed',
-                'description' => $description ?? $this->getDefaultTransactionDescription($type),
-                'balance_before' => $balanceBefore,
-                'balance_after' => $this->balance,
-                'ip_address' => request()->ip(),
-            ]);
-
-            return $this;
-        });
-    }
-
-    protected function getDefaultTransactionDescription(string $type): string
-    {
-        return match($type) {
-            'deposit' => 'Пополнение баланса',
-            'withdrawal' => 'Списание средств',
-            'payment' => 'Оплата услуг',
-            'refund' => 'Возврат средств',
-            'bonus' => 'Бонусные средства',
-            'penalty' => 'Штрафные санкции',
-            default => 'Транзакция',
-        };
-    }
-
+    /**
+     * Check if user has admin role.
+     */
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    public function hasSufficientBalance(float $amount): bool
+    /**
+     * Check if user is active.
+     */
+    public function isActive(): bool
     {
-        return $this->balance >= $amount;
+        return $this->is_active;
     }
 
+    /**
+     * Get the user's avatar URL.
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        return $this->avatar 
+            ? asset('storage/avatars/'.$this->avatar)
+            : asset('images/default-avatar.png');
+    }
+
+    /**
+     * Scope for active users.
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    public function preferredLocale(): string
+    /**
+     * Scope for admins.
+     */
+    public function scopeAdmins($query)
     {
-        return $this->locale ?? config('app.locale');
+        return $query->where('role', 'admin');
     }
 
-    public function transactions(): HasMany
+    /**
+     * Encrypt password when setting it.
+     */
+    public function setPasswordAttribute($value): void
     {
-        return $this->hasMany(Transaction::class)->latest();
+        // Проверим, если переданное значение пароля не пустое
+        if (!empty($value)) {
+            $this->attributes['password'] = bcrypt($value);
+        }
     }
 
-    public function markEmailAsVerified(): bool
+    /**
+     * Проверка на подтверждение email
+     */
+    public function markEmailAsVerified(): void
     {
-        return $this->forceFill([
-            'email_verified_at' => $this->freshTimestamp(),
-        ])->save();
-    }
-
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new \App\Notifications\VerifyEmail);
+        $this->update(['email_verified_at' => now()]);
     }
 }

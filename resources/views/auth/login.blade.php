@@ -5,7 +5,7 @@
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/heroicons@1.0.6/outline/index.js"></script>
-  </head>
+</head>
 <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8 relative z-10">
     <div class="max-w-md mx-auto">
         <!-- Логотип с анимацией -->
@@ -28,7 +28,18 @@
                 Вход в аккаунт
             </h2>
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+            <!-- Вывод общих ошибок -->
+            @if($errors->any())
+                <div class="mb-4 p-4 bg-red-500/10 border border-red-500 text-red-500 rounded-lg">
+                    <ul class="list-disc list-inside">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
 
                 <!-- Поле Email -->
@@ -43,11 +54,11 @@
                             </svg>
                         </div>
                         <input id="email" name="email" type="email" autocomplete="email" required
-                               class="bg-gray-700 text-white placeholder-gray-400 pl-10 pr-4 py-3 w-full border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition duration-200"
+                               class="bg-gray-700 text-white placeholder-gray-400 pl-10 pr-4 py-2.5 w-full border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition duration-200"
                                placeholder="your@email.com" value="{{ old('email') }}">
                     </div>
                     @error('email')
-                        <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -63,11 +74,11 @@
                             </svg>
                         </div>
                         <input id="password" name="password" type="password" autocomplete="current-password" required
-                               class="bg-gray-700 text-white placeholder-gray-400 pl-10 pr-4 py-3 w-full border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition duration-200"
+                               class="bg-gray-700 text-white placeholder-gray-400 pl-10 pr-4 py-2.5 w-full border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition duration-200"
                                placeholder="••••••••">
                     </div>
                     @error('password')
-                        <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -89,14 +100,14 @@
 
                 <!-- Кнопка входа -->
                 <div class="pt-2">
-                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition duration-200 hover:shadow-md">
+                    <button type="submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition duration-200 hover:shadow-md">
                         Войти
                     </button>
                 </div>
             </form>
 
             <!-- Разделитель -->
-            <div class="mt-8 pt-4">
+            <div class="mt-6 pt-4">
                 <div class="relative">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t border-gray-600"></div>
@@ -109,7 +120,7 @@
                 </div>
 
                 <!-- Социальные кнопки -->
-                <div class="mt-6 grid grid-cols-2 gap-3">
+                <div class="mt-4 grid grid-cols-2 gap-3">
                     <a href="#" class="w-full inline-flex justify-center items-center py-2 px-4 border border-gray-600 rounded-lg shadow-sm bg-gray-700 text-sm font-medium text-gray-300 hover:bg-gray-600 transition duration-200">
                         <svg class="w-5 h-5 mr-2 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
@@ -126,7 +137,7 @@
             </div>
 
             <!-- Ссылка на регистрацию -->
-            <div class="mt-8 text-center">
+            <div class="mt-6 text-center">
                 <p class="text-sm text-gray-400">
                     Нет аккаунта? 
                     <a href="{{ route('register') }}" class="font-medium text-cyan-400 hover:text-cyan-300 transition duration-200">
