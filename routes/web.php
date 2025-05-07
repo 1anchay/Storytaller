@@ -33,6 +33,7 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/prava', 'prava')->name('prava');
     Route::get('/yslovya', 'yslovya')->name('yslovya');
     Route::get('/blog', 'blog')->name('blog');
+    Route::get('/audit', 'audit')->name('audit');
 });
 
 // Публичные кейсы (оптимизированная версия)

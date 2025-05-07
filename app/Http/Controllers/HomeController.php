@@ -23,4 +23,12 @@ public function blog()
 {
     return view('blog');
 }
+public function store()
+{
+    return view('store');
+}
+public function audit()
+{
+    return view('audit');
+}
 }
