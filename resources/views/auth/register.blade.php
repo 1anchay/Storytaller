@@ -17,7 +17,7 @@
                     </svg>
                 </div>
                 <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 tracking-tight group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:via-red-500 group-hover:to-yellow-500 transition-all duration-500">
-                    Re<span class="text-white">Майн</span>
+                    Secure<span class="text-white">Shield</span>
                 </span>
             </a>
         </div>

@@ -16,7 +16,7 @@
                     </svg>
                 </div>
                 <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 tracking-tight">
-                    Re<span class="text-white">Майн</span>
+                    Secure<span class="text-white">Shield</span>
                 </span>
             </a>
         </div>
