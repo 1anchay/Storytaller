@@ -3,876 +3,604 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReМайн - Кейсы аккаунтов Steam</title>
+    <title>SecureShield - Защита конфиденциальной информации веб-сайтов</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/heroicons@1.0.6/outline/index.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: 'Oxanium', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #0f0f13;
             color: #ffffff;
         }
         
-        .glow-text {
-            text-shadow: 0 0 10px rgba(255, 235, 59, 0.7);
+        .tech-bg {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(0, 100, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 200, 255, 0.1) 0%, transparent 50%);
         }
         
-        .case-card {
+        .glow-text {
+            text-shadow: 0 0 10px rgba(0, 150, 255, 0.7);
+        }
+        
+        .security-card {
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 235, 59, 0.1);
+            border: 1px solid rgba(0, 150, 255, 0.1);
             position: relative;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        
+        .security-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 150, 255, 0.2);
+        }
+        
+        .encryption-animation {
+            position: relative;
+            height: 300px;
             overflow: hidden;
         }
         
-        .case-card::before {
-            content: '';
+        .data-particle {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,235,59,0.1) 0%, rgba(255,235,59,0) 70%);
-            transform: rotate(30deg);
-            transition: all 0.5s ease;
-            opacity: 0;
+            width: 8px;
+            height: 8px;
+            background-color: rgba(0, 200, 255, 0.7);
+            border-radius: 50%;
+            animation: float 5s infinite ease-in-out;
         }
         
-        .case-card:hover::before {
-            opacity: 1;
-            animation: shine 1.5s infinite;
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-20px) translateX(10px); }
         }
         
-        @keyframes shine {
-            0% { transform: rotate(30deg) translate(-10%, -10%); }
-            100% { transform: rotate(30deg) translate(10%, 10%); }
+        .shield-icon {
+            filter: drop-shadow(0 0 8px rgba(0, 150, 255, 0.7));
         }
         
-        .price-tag {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: linear-gradient(135deg, #ffeb3b, #ff9800);
-            color: #111;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-        }
-        
-        .game-badge {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .section-title {
+        .hacker-attack {
             position: relative;
-            display: inline-block;
+            width: 100%;
+            height: 200px;
+            border: 2px dashed rgba(255, 50, 50, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
-        .section-title::after {
-            content: '';
+        .attack-line {
             position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #ffeb3b, transparent);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 50, 50, 0.8), transparent);
+            animation: attack 3s infinite;
+        }
+        
+        @keyframes attack {
+            0% { width: 0; left: 0; opacity: 0; }
+            50% { width: 100%; left: 0; opacity: 1; }
+            100% { width: 0; left: 100%; opacity: 0; }
+        }
+        
+        .protected-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.8), transparent);
+            animation: protect 3s infinite;
+            transform-origin: left;
+        }
+        
+        @keyframes protect {
+            0% { transform: scaleX(0); opacity: 0; }
+            50% { transform: scaleX(1); opacity: 1; }
+            100% { transform: scaleX(0); opacity: 0; }
         }
     </style>
 </head>
 <body class="bg-gray-900">
-    @include('header')
-
-    <!-- Hero Section -->
-<section class="relative bg-gradient-to-b from-gray-900 to-gray-800 py-24 md:py-32 overflow-hidden">
-    <!-- Анимированный фон с векторными элементами -->
-    <div class="absolute inset-0 opacity-10">
-        <!-- Векторные шестиугольники (стиль Steam) -->
-        <div class="absolute top-0 left-0 w-full h-full bg-repeat opacity-30" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMEwxMDAgMjVMOTAgNzVMNTAgMTAwTDEwIDc1TDAgMjVMNTAgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmY5ZTAwIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvc3ZnPg=='); transform: rotate(15deg);"></div>
-        
-        <!-- Векторные круги (стиль Yandex) -->
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(253,230,138,0.1)_0%,transparent_70%)]"></div>
-    </div>
-
-    <!-- Анимированные элементы -->
-    <div class="absolute top-1/4 left-10 w-16 h-16 bg-yellow-400 rounded-full filter blur-xl opacity-10 animate-float"></div>
-    <div class="absolute top-1/3 right-20 w-24 h-24 bg-yellow-500 rounded-full filter blur-xl opacity-10 animate-float-delay"></div>
-    <div class="absolute bottom-1/4 left-1/4 w-20 h-20 bg-yellow-600 rounded-full filter blur-xl opacity-10 animate-float"></div>
-
-    <!-- Основной контент -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
-            <!-- Текстовый блок -->
-            <div class="text-center lg:text-left max-w-2xl">
-                <div class="mb-6 flex justify-center lg:justify-start">
-                    <span class="inline-flex items-center px-4 py-2 rounded-full bg-gray-800 border border-yellow-400/30 text-yellow-400 text-sm font-medium">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
-                        </svg>
-                        Новые кейсы каждый день
-                    </span>
-                </div>
-                
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-white">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">Коллекционные</span>
-                    <br>аккаунты Steam
-                </h1>
-                
-                <p class="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed">
-                    Уникальные игровые аккаунты с редкими предметами, высоким рейтингом 
-                    и эксклюзивным контентом. Открывайте кейсы и получайте ценные призы!
-                </p>
-                
-                <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                    <a href="#cases" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-bold rounded-lg hover:from-yellow-400 hover:to-yellow-500 transition-all duration-300 shadow-lg hover:shadow-yellow-500/30 flex items-center justify-center transform hover:scale-105">
-                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                        </svg>
-                        Смотреть кейсы
-                    </a>
-                    <a href="#" class="px-8 py-4 border-2 border-yellow-400 text-yellow-400 font-bold rounded-lg hover:bg-yellow-400 hover:bg-opacity-10 transition-all duration-300 shadow-lg hover:shadow-yellow-500/20 flex items-center justify-center transform hover:scale-105">
-                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Как это работает?
-                    </a>
-                </div>
-            </div>
-
-            <!-- Векторное изображение (Steam стиль) -->
-            <div class="relative w-full lg:w-1/2 max-w-lg mt-10 lg:mt-0">
-                <div class="relative">
-                    <!-- Основной контейнер -->
-                    <div class="relative z-10 w-full h-full">
-                        <svg viewBox="0 0 400 400" class="w-full h-auto">
-                            <!-- Фон (стиль Steam) -->
-                            <rect width="400" height="400" rx="20" fill="#1A1A1A" />
-                            
-                            <!-- Шевроны (узор) -->
-                            <path d="M0,100 L100,0 L200,100 L300,0 L400,100 L400,200 L300,300 L200,200 L100,300 L0,200 Z" fill="none" stroke="#FF9E00" stroke-width="2" opacity="0.3" />
-                            
-                            <!-- Основное изображение (стилизованный Steam лого) -->
-                            <circle cx="200" cy="200" r="80" fill="none" stroke="#FF9E00" stroke-width="8" />
-                            <path d="M150,200 A50,50 0 1,1 250,200" fill="none" stroke="#FF9E00" stroke-width="8" />
-                            <path d="M170,170 L230,230 M170,230 L230,170" stroke="#FF9E00" stroke-width="8" stroke-linecap="round" />
-                            
-                            <!-- Эффекты -->
-                            <circle cx="200" cy="200" r="60" fill="none" stroke="#FF9E00" stroke-width="2" stroke-dasharray="5,5" opacity="0.5" />
-                        </svg>
-                    </div>
-                    
-                    <!-- Анимация свечения -->
-                    <div class="absolute inset-0 rounded-2xl bg-yellow-500 opacity-0 group-hover:opacity-10 blur-md transition-opacity duration-300"></div>
-                </div>
-                
-                <!-- Плавающие элементы (игровые предметы) -->
-                <div class="absolute -top-10 -left-10 w-20 h-20 animate-float">
-                    <svg viewBox="0 0 100 100" class="w-full h-full">
-                        <polygon points="50,5 90,30 90,70 50,95 10,70 10,30" fill="#FF9E00" opacity="0.8" />
-                    </svg>
-                </div>
-                <div class="absolute -bottom-5 -right-5 w-16 h-16 animate-float-delay">
-                    <svg viewBox="0 0 100 100" class="w-full h-full">
-                        <circle cx="50" cy="50" r="40" fill="#FF9E00" opacity="0.6" />
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Волнообразный разделитель -->
-    <div class="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-16">
-            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="#FF9E00"></path>
-            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="#FF9E00"></path>
-            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#FF9E00"></path>
-        </svg>
-    </div>
-</section>
-
-<style>
-    .animate-float {
-        animation: float 6s ease-in-out infinite;
-    }
-    .animate-float-delay {
-        animation: float 6s ease-in-out 1s infinite;
-    }
-    @keyframes float {
-        0%, 100% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(5deg); }
-    }
-</style>
-
-    <!-- Cases Section -->
-<section id="cases" class="py-16 relative bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-12">
-            <div class="mb-6 md:mb-0">
-                <h2 class="text-3xl sm:text-4xl font-bold text-yellow-400 flex items-center">
-                    <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    Кейсы аккаунтов Steam
-                </h2>
-                <p class="text-gray-400 mt-2">Эксклюзивные коллекции игровых аккаунтов</p>
-            </div>
-            
-            <div class="flex items-center space-x-4 bg-gray-800 px-4 py-2 rounded-lg border border-gray-700">
-                <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path>
+    <!-- Header -->
+    <header class="tech-bg py-6 border-b border-gray-800">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center">
+                <svg class="w-10 h-10 text-blue-400 shield-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                 </svg>
-                <span class="text-gray-300">Сортировка:</span>
-                <select class="bg-gray-800 text-white rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-yellow-500 border border-gray-700">
-                    <option>По популярности</option>
-                    <option>По цене (дешевые)</option>
-                    <option>По цене (дорогие)</option>
-                    <option>По новизне</option>
-                </select>
+                <span class="ml-3 text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">SecureShield</span>
             </div>
-        </div>
-        
-        <!-- Cases Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Кейс 1 - CS:GO Prime -->
-            <div class="group relative bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700 hover:border-yellow-400 transform hover:-translate-y-1">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="CS:GO Prime" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    <span class="absolute top-3 left-3 bg-gray-900/80 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                        </svg>
-                        1200+ часов
-                    </span>
-                    <span class="absolute top-3 right-3 bg-yellow-500 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">890₽</span>
-                </div>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold mb-2 text-white">CS:GO Prime аккаунт</h3>
-                    <p class="text-gray-300 text-sm mb-4">Прайм-статус, инвентарь на 1200₽, звание: Legendary Eagle.</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">FPS</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Шутер</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Prime</span>
-                        </div>
-                        <a href="{{ route('case1') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-semibold rounded-md hover:from-yellow-400 hover:to-yellow-500 transition duration-300 text-sm flex items-center">
-                            Открыть
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кейс 2 - Dota 2 -->
-            <div class="group relative bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700 hover:border-yellow-400 transform hover:-translate-y-1">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1638432216621-9a377a1a928a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dota 2 Immortal" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    <span class="absolute top-3 left-3 bg-gray-900/80 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                        </svg>
-                        2000+ игр
-                    </span>
-                    <span class="absolute top-3 right-3 bg-yellow-500 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">1 500₽</span>
-                </div>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold mb-2 text-white">Dota 2 — Immortal</h3>
-                    <p class="text-gray-300 text-sm mb-4">Более 2000 игр, редкие скины, рейтинг Divine.</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">MOBA</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Стратегия</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Immortal</span>
-                        </div>
-                        <a href="{{ route('case2') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-semibold rounded-md hover:from-yellow-400 hover:to-yellow-500 transition duration-300 text-sm flex items-center">
-                            Открыть
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кейс 3 - Rust -->
-            <div class="group relative bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700 hover:border-yellow-400 transform hover:-translate-y-1">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Rust Survivor" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    <span class="absolute top-3 left-3 bg-gray-900/80 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                        </svg>
-                        500+ часов
-                    </span>
-                    <span class="absolute top-3 right-3 bg-yellow-500 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">1 290₽</span>
-                </div>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold mb-2 text-white">Rust — выживший</h3>
-                    <p class="text-gray-300 text-sm mb-4">Rust, DayZ, ARK. Более 500 часов. Готов к рейдам!</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Выживание</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">PVP</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Хардкор</span>
-                        </div>
-                        <a href="{{ route('case3') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-semibold rounded-md hover:from-yellow-400 hover:to-yellow-500 transition duration-300 text-sm flex items-center">
-                            Открыть
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кейс 4 - Indie Bundle -->
-            <div class="group relative bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700 hover:border-yellow-400 transform hover:-translate-y-1">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Indie Bundle" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    <span class="absolute top-3 left-3 bg-gray-900/80 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                        </svg>
-                        20+ игр
-                    </span>
-                    <span class="absolute top-3 right-3 bg-yellow-500 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">490₽</span>
-                </div>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold mb-2 text-white">Инди-бандл</h3>
-                    <p class="text-gray-300 text-sm mb-4">20+ инди-игр: Hollow Knight, Celeste, Stardew Valley и др.</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Инди</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Бандл</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Коллекция</span>
-                        </div>
-                        <a href="{{ route('case4') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-semibold rounded-md hover:from-yellow-400 hover:to-yellow-500 transition duration-300 text-sm flex items-center">
-                            Открыть
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кейс 5 - GTA V -->
-            <div class="group relative bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700 hover:border-yellow-400 transform hover:-translate-y-1">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1542729776-e5f2d1f584c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="GTA V" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    <span class="absolute top-3 left-3 bg-gray-900/80 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                        </svg>
-                        Online
-                    </span>
-                    <span class="absolute top-3 right-3 bg-yellow-500 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">750₽</span>
-                </div>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold mb-2 text-white">GTA V + Online</h3>
-                    <p class="text-gray-300 text-sm mb-4">Полная версия GTA V, бонусы в GTA Online. Банов нет.</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Открытый мир</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Экшен</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Мультиплеер</span>
-                        </div>
-                        <a href="{{ route('case5') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-semibold rounded-md hover:from-yellow-400 hover:to-yellow-500 transition duration-300 text-sm flex items-center">
-                            Открыть
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кейс 6 - PUBG -->
-            <div class="group relative bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700 hover:border-yellow-400 transform hover:-translate-y-1">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="PUBG" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    <span class="absolute top-3 left-3 bg-gray-900/80 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                        </svg>
-                        K/D 2.3
-                    </span>
-                    <span class="absolute top-3 right-3 bg-yellow-500 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">980₽</span>
-                </div>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold mb-2 text-white">PUBG — Полная прокачка</h3>
-                    <p class="text-gray-300 text-sm mb-4">Полный пропуск, скины, статистика K/D 2.3, 800+ часов.</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Баттл-рояль</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">FPS</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Прокачка</span>
-                        </div>
-                        <a href="{{ route('case6') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-semibold rounded-md hover:from-yellow-400 hover:to-yellow-500 transition duration-300 text-sm flex items-center">
-                            Открыть
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кейс 7 - Horror Pack -->
-            <div class="group relative bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700 hover:border-yellow-400 transform hover:-translate-y-1">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Horror Pack" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    <span class="absolute top-3 left-3 bg-gray-900/80 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                        </svg>
-                        4 игры
-                    </span>
-                    <span class="absolute top-3 right-3 bg-yellow-500 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">590₽</span>
-                </div>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold mb-2 text-white">Хоррор-бандл</h3>
-                    <p class="text-gray-300 text-sm mb-4">Dead by Daylight, Phasmophobia, Resident Evil 7, Outlast.</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Хоррор</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Выживание</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Бандл</span>
-                        </div>
-                        <a href="{{ route('case7') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-semibold rounded-md hover:from-yellow-400 hover:to-yellow-500 transition duration-300 text-sm flex items-center">
-                            Открыть
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кейс 8 - AAA Library -->
-            <div class="group relative bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700 hover:border-yellow-400 transform hover:-translate-y-1">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="AAA Library" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    <span class="absolute top-3 left-3 bg-gray-900/80 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                        </svg>
-                        AAA
-                    </span>
-                    <span class="absolute top-3 right-3 bg-yellow-500 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">1 990₽</span>
-                </div>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold mb-2 text-white">Топ AAA-игры</h3>
-                    <p class="text-gray-300 text-sm mb-4">The Witcher 3, Cyberpunk 2077, RDR2, Elden Ring. Идеально для коллекции.</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-wrap gap-1">
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">AAA</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Коллекция</span>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Хиты</span>
-                        </div>
-                        <a href="{{ route('case8') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-semibold rounded-md hover:from-yellow-400 hover:to-yellow-500 transition duration-300 text-sm flex items-center">
-                            Открыть
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Show More Button -->
-        <div class="mt-12 text-center">
-            <button class="px-8 py-3 border-2 border-yellow-400 text-yellow-400 font-bold rounded-lg hover:bg-yellow-400 hover:bg-opacity-10 transition duration-300 shadow-lg transform hover:scale-105 flex items-center mx-auto">
-                Показать еще
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#features" class="text-gray-300 hover:text-blue-400 transition">Возможности</a>
+                <a href="#protection" class="text-gray-300 hover:text-blue-400 transition">Защита</a>
+                <a href="#demo" class="text-gray-300 hover:text-blue-400 transition">Демо</a>
+                <a href="#contact" class="text-gray-300 hover:text-blue-400 transition">Контакты</a>
+            </nav>
+            <button class="md:hidden text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
         </div>
-    </div>
-</section>
+    </header>
 
-    <!-- Decorative Vector Section -->
-<section class="relative py-20 bg-gradient-to-b from-gray-900 to-gray-800 overflow-hidden">
-    <!-- Анимированные фоновые элементы -->
-    <div class="absolute inset-0 opacity-10">
-        <!-- Векторные шестиугольники (стиль Steam) -->
-        <div class="absolute top-0 left-0 w-full h-full bg-repeat opacity-20" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMEwxMDAgMjVMOTAgNzVMNTAgMTAwTDEwIDc1TDAgMjVMNTAgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmY5ZTAwIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvc3ZnPg=='); transform: rotate(15deg);"></div>
-        
-        <!-- Векторные круги (стиль Yandex) -->
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(253,230,138,0.1)_0%,transparent_70%)]"></div>
-    </div>
-
-    <!-- Плавающие векторные элементы -->
-    <div class="absolute top-1/4 left-1/4 w-32 h-32 opacity-20 animate-float">
-        <svg viewBox="0 0 200 200" class="w-full h-full">
-            <path d="M100 0L200 50L150 150L50 200L0 100L100 0Z" fill="#FF9E00" />
-        </svg>
-    </div>
-    
-    <div class="absolute bottom-1/3 right-1/4 w-24 h-24 opacity-15 animate-float-delay">
-        <svg viewBox="0 0 200 200" class="w-full h-full">
-            <circle cx="100" cy="100" r="80" fill="#FF9E00" />
-        </svg>
-    </div>
-    
-    <div class="absolute top-1/3 right-20 w-28 h-28 opacity-10 animate-float">
-        <svg viewBox="0 0 200 200" class="w-full h-full">
-            <rect x="25" y="25" width="150" height="150" rx="20" fill="#FF9E00" />
-        </svg>
-    </div>
-
-    <!-- Основной контент -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold mb-8 text-white">
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">Премиум качество</span>
-            <br>в каждом кейсе
-        </h2>
-        
-        <!-- Векторная композиция -->
-        <div class="relative mx-auto w-full max-w-2xl h-64 md:h-80 mt-12">
-            <!-- Основной векторный элемент -->
-            <svg viewBox="0 0 500 300" class="w-full h-full">
-                <!-- Фон -->
-                <rect width="500" height="300" rx="20" fill="#1E1E1E" />
-                
-                <!-- Стилизованный кейс -->
-                <rect x="150" y="50" width="200" height="200" rx="15" fill="#2D2D2D" stroke="#FF9E00" stroke-width="3" />
-                <path d="M150 80L350 80" stroke="#FF9E00" stroke-width="2" stroke-dasharray="5,3" />
-                <circle cx="250" cy="150" r="50" fill="none" stroke="#FF9E00" stroke-width="3" stroke-dasharray="3,3" />
-                
-                <!-- Иконки игр -->
-                <svg x="180" y="120" width="40" height="40" viewBox="0 0 24 24">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="#FF9E00" stroke-width="2" />
-                </svg>
-                
-                <svg x="240" y="120" width="40" height="40" viewBox="0 0 24 24">
-                    <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z" fill="none" stroke="#FF9E00" stroke-width="2" />
-                    <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" fill="none" stroke="#FF9E00" stroke-width="2" stroke-linecap="round" />
-                </svg>
-                
-                <svg x="300" y="120" width="40" height="40" viewBox="0 0 24 24">
-                    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" fill="none" stroke="#FF9E00" stroke-width="2" />
-                </svg>
-            </svg>
-            
-            <!-- Анимация свечения -->
-            <div class="absolute inset-0 rounded-2xl bg-yellow-500 opacity-0 group-hover:opacity-10 blur-md transition-opacity duration-300"></div>
+    <!-- Hero Section -->
+    <section class="tech-bg py-20 md:py-32 relative overflow-hidden">
+        <!-- Animated background elements -->
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-0 left-0 w-full h-full bg-repeat opacity-30" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMEwxMDAgMjVMOTAgNzVMNTAgMTAwTDEwIDc1TDAgMjVMNTAgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDA5NWZmIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvc3ZnPg==');"></div>
         </div>
         
-        <!-- Кнопка CTA -->
-        <div class="mt-16">
-            <a href="#cases" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-bold rounded-lg hover:from-yellow-400 hover:to-yellow-500 transition-all duration-300 shadow-lg hover:shadow-yellow-500/30 transform hover:scale-105">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                </svg>
-                Посмотреть все кейсы
-            </a>
-        </div>
-    </div>
-
-    <!-- Волнообразный разделитель -->
-    <div class="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-16">
-            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="#FF9E00"></path>
-            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="#FF9E00"></path>
-            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#FF9E00"></path>
-        </svg>
-    </div>
-</section>
-
-<style>
-    .animate-float {
-        animation: float 8s ease-in-out infinite;
-    }
-    .animate-float-delay {
-        animation: float 8s ease-in-out 2s infinite;
-    }
-    @keyframes float {
-        0%, 100% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(5deg); }
-    }
-</style>
-
-    <!-- FAQ Section -->
-    <section class="py-16 bg-gray-800">
-        <div class="max-w-4xl mx-auto px-6">
-            <h2 class="text-3xl text-center text-yellow-400 font-bold mb-16 section-title">
-                Часто задаваемые вопросы
-            </h2>
-            
-            <div class="space-y-4">
-                <div class="border-b border-gray-700 pb-4">
-                    <button class="flex justify-between items-center w-full text-left text-white font-semibold">
-                        <span>Как происходит доставка аккаунта?</span>
-                        <svg class="w-5 h-5 text-yellow-400 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="mt-2 text-gray-300">
-                        После оплаты вы мгновенно получаете данные аккаунта (логин и пароль) в личном кабинете. Также они дублируются на вашу электронную почту.
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div class="text-center lg:text-left max-w-2xl">
+                    <div class="mb-6 flex justify-center lg:justify-start">
+                        <span class="inline-flex items-center px-4 py-2 rounded-full bg-gray-800 border border-blue-400/30 text-blue-400 text-sm font-medium">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Защита данных уровня Enterprise
+                        </span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-white">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Защита</span>
+                        <br>конфиденциальных данных
+                    </h1>
+                    
+                    <p class="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed">
+                        Комплексная система защиты веб-сайтов от утечек информации, хакерских атак 
+                        и несанкционированного доступа. Обеспечиваем безопасность данных ваших клиентов.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                        <a href="#demo" class="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-lg hover:from-blue-400 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-blue-500/30 flex items-center justify-center transform hover:scale-105">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            Демонстрация защиты
+                        </a>
+                        <a href="#features" class="px-8 py-4 border-2 border-blue-400 text-blue-400 font-bold rounded-lg hover:bg-blue-400 hover:bg-opacity-10 transition-all duration-300 shadow-lg hover:shadow-blue-500/20 flex items-center justify-center transform hover:scale-105">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            Возможности системы
+                        </a>
                     </div>
                 </div>
-                
-                <div class="border-b border-gray-700 pb-4">
-                    <button class="flex justify-between items-center w-full text-left text-white font-semibold">
-                        <span>Можно ли изменить данные аккаунта после покупки?</span>
-                        <svg class="w-5 h-5 text-yellow-400 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="mt-2 text-gray-300">
-                        Да, все купленные аккаунты можно полностью переоформить на себя: изменить почту, пароль, привязать мобильный телефон и т.д.
-                    </div>
-                </div>
-                
-                <div class="border-b border-gray-700 pb-4">
-                    <button class="flex justify-between items-center w-full text-left text-white font-semibold">
-                        <span>Есть ли гарантия на аккаунты?</span>
-                        <svg class="w-5 h-5 text-yellow-400 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="mt-2 text-gray-300">
-                        Мы предоставляем 14-дневную гарантию на все аккаунты. Если в течение этого времени возникнут проблемы, мы заменим аккаунт или вернем деньги.
-                    </div>
-                </div>
-                
-                <div class="border-b border-gray-700 pb-4">
-                    <button class="flex justify-between items-center w-full text-left text-white font-semibold">
-                        <span>Какие способы оплаты вы принимаете?</span>
-                        <svg class="w-5 h-5 text-yellow-400 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="mt-2 text-gray-300">
-                        Мы принимаем банковские карты, Qiwi, Яндекс.Деньги, криптовалюту (Bitcoin, Ethereum), а также другие популярные платежные системы.
+
+                <!-- Encryption Animation -->
+                <div class="relative w-full lg:w-1/2 max-w-lg mt-10 lg:mt-0">
+                    <div class="encryption-animation bg-gray-800/50 border-2 border-blue-400/20 rounded-xl p-6">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg class="w-32 h-32 text-blue-400 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Data particles -->
+                        <div id="particles"></div>
+                        
+                        <!-- Encrypted data -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <div class="text-xs font-mono text-blue-300 mb-2">Исходные данные:</div>
+                                <div class="text-sm font-mono text-white mb-4">Логин: user123 | Пароль: ********</div>
+                                
+                                <svg class="w-8 h-8 mx-auto text-blue-400 my-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                </svg>
+                                
+                                <div class="text-xs font-mono text-blue-300 mb-2">Зашифрованные данные:</div>
+                                <div class="text-sm font-mono text-gray-400">a5f8d3e0c1b7...9f2e4d6c8a0b</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Interactive CTA Section with Mini-Game -->
-<section class="relative py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-    <!-- Анимированные фоновые элементы -->
-    <div class="absolute inset-0 opacity-10">
-        <!-- Шевронный узор -->
-        <div class="absolute inset-0 bg-repeat" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMEwxMDAgNTBMNTAgMTAwTDAgNTBMNTAgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmY5ZTAwIiBzdHJva2Utb3BhY2l0eT0iMC4xIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=');"></div>
-    </div>
-    
-    <!-- Плавающие игровые элементы -->
-    <div class="absolute top-1/4 left-1/5 w-12 h-12 bg-yellow-400 rounded-full filter blur-lg opacity-10 animate-float"></div>
-    <div class="absolute top-1/3 right-1/4 w-16 h-16 bg-yellow-500 rounded-full filter blur-lg opacity-10 animate-float-delay"></div>
-    
-    <!-- Основной контент -->
-    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
-        <h2 class="text-4xl md:text-5xl font-bold text-yellow-400 mb-6">
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">Готовы открыть кейс?</span>
-        </h2>
-        <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-            Сыграйте в мини-игру и получите промокод на скидку 10%!
-        </p>
-        
-        <!-- Мини-игра "Открой сундук" -->
-        <div class="bg-gray-800/50 border-2 border-yellow-400/30 rounded-xl p-6 mb-10 max-w-md mx-auto">
-            <div class="relative h-40 mb-6 flex justify-center items-center">
-                <!-- Сундук (закрытый/открытый) -->
-                <div id="chest" class="cursor-pointer transition-all duration-500 transform hover:scale-110">
-                    <svg id="closed-chest" class="w-32 h-32 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    <svg id="opened-chest" class="w-32 h-32 text-yellow-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-                    </svg>
+    <!-- Security Features -->
+    <section id="features" class="py-20 bg-gray-800/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl text-center font-bold mb-16">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Ключевые возможности</span>
+                <br>нашей системы защиты
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="security-card p-8 rounded-xl">
+                    <div class="w-14 h-14 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Шифрование данных</h3>
+                    <p class="text-gray-400">Использование алгоритмов AES-256 и RSA для защиты конфиденциальной информации как при хранении, так и при передаче.</p>
                 </div>
                 
-                <!-- Светящийся эффект при открытии -->
-                <div id="chest-glow" class="absolute inset-0 bg-yellow-400 rounded-full opacity-0 blur-xl transition-opacity duration-300 pointer-events-none"></div>
-            </div>
-            
-            <!-- Промокод (скрыт до открытия) -->
-            <div id="promo-code" class="hidden">
-                <p class="text-gray-400 mb-2">Ваш промокод:</p>
-                <div class="bg-gray-900 border-2 border-dashed border-yellow-400 rounded-lg py-3 px-6 mb-4">
-                    <span class="text-2xl font-mono font-bold text-yellow-400">STEAM10</span>
+                <!-- Feature 2 -->
+                <div class="security-card p-8 rounded-xl">
+                    <div class="w-14 h-14 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Защита от атак</h3>
+                    <p class="text-gray-400">Система предотвращает SQL-инъекции, XSS, CSRF, DDoS и другие виды кибератак с помощью интеллектуального анализа трафика.</p>
                 </div>
-                <p class="text-sm text-gray-500">Используйте при оформлении заказа</p>
+                
+                <!-- Feature 3 -->
+                <div class="security-card p-8 rounded-xl">
+                    <div class="w-14 h-14 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Двухфакторная аутентификация</h3>
+                    <p class="text-gray-400">Поддержка SMS, email, TOTP и аппаратных ключей безопасности для доступа к административной панели.</p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="security-card p-8 rounded-xl">
+                    <div class="w-14 h-14 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Мониторинг активности</h3>
+                    <p class="text-gray-400">Журналирование всех действий пользователей с возможностью алертов при подозрительной активности.</p>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="security-card p-8 rounded-xl">
+                    <div class="w-14 h-14 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Ролевая модель доступа</h3>
+                    <p class="text-gray-400">Гибкая система прав пользователей с минимальными привилегиями для каждого сотрудника.</p>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="security-card p-8 rounded-xl">
+                    <div class="w-14 h-14 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Аудит безопасности</h3>
+                    <p class="text-gray-400">Регулярное автоматическое тестирование системы на уязвимости с генерацией отчетов и рекомендаций.</p>
+                </div>
             </div>
-            
-            <!-- Инструкция -->
-            <p id="game-instruction" class="text-yellow-400/80 animate-pulse">Нажмите на сундук, чтобы открыть</p>
         </div>
-        
-        <!-- Кнопки действий -->
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#cases" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 font-bold rounded-lg hover:from-yellow-400 hover:to-yellow-500 transition-all duration-300 shadow-lg hover:shadow-yellow-500/30 flex items-center justify-center transform hover:scale-105">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                </svg>
-                Выбрать кейс
-            </a>
-            <button id="copy-promo" class="px-8 py-4 border-2 border-yellow-400 text-yellow-400 font-bold rounded-lg hover:bg-yellow-400 hover:bg-opacity-10 transition-all duration-300 shadow-lg hover:shadow-yellow-500/20 flex items-center justify-center transform hover:scale-105 hidden">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                </svg>
-                Скопировать промокод
-            </button>
+    </section>
+
+    <!-- Protection Demo -->
+    <section id="demo" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl text-center font-bold mb-16">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Интерактивная демонстрация</span>
+                <br>работы системы защиты
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Как мы защищаем ваш сайт от атак</h3>
+                    <p class="text-gray-400 mb-8">Наша система в реальном времени анализирует входящий трафик и блокирует потенциально опасные запросы. Попробуйте сами:</p>
+                    
+                    <div class="hacker-attack mb-8">
+                        <!-- Attack lines -->
+                        <div class="attack-line" style="top: 20%; animation-delay: 0.5s;"></div>
+                        <div class="attack-line" style="top: 40%; animation-delay: 1.5s;"></div>
+                        <div class="attack-line" style="top: 60%; animation-delay: 2.5s;"></div>
+                        <div class="attack-line" style="top: 80%; animation-delay: 3.5s;"></div>
+                        
+                        <!-- Protection lines -->
+                        <div class="protected-line" style="top: 30%; width: 80%; left: 10%; animation-delay: 0s;"></div>
+                        <div class="protected-line" style="top: 50%; width: 90%; left: 5%; animation-delay: 1s;"></div>
+                        <div class="protected-line" style="top: 70%; width: 70%; left: 15%; animation-delay: 2s;"></div>
+                        
+                        <!-- Center text -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <div class="text-blue-400 font-bold text-lg mb-2">АКТИВНАЯ ЗАЩИТА</div>
+                                <div class="text-xs text-gray-400">Обнаружено и заблокировано: <span class="text-red-400">4 атаки</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="simulate-attack" class="w-full px-6 py-3 bg-red-500/10 border border-red-500 text-red-400 rounded-lg hover:bg-red-500/20 transition flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                        </svg>
+                        Симулировать хакерскую атаку
+                    </button>
+                </div>
+                
+                <div>
+                    <div class="bg-gray-800/50 border-2 border-blue-400/20 rounded-xl p-8">
+                        <h4 class="text-xl font-bold text-white mb-4">Журнал событий безопасности</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-white">Обнаружена SQL-инъекция</p>
+                                    <p class="text-xs text-gray-400">IP: 185.143.223.67 | Время: 14:23:45</p>
+                                    <p class="text-xs text-blue-400 mt-1">Запрос заблокирован, IP добавлен в черный список</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-white">Попытка XSS-атаки</p>
+                                    <p class="text-xs text-gray-400">IP: 91.234.190.12 | Время: 14:21:33</p>
+                                    <p class="text-xs text-blue-400 mt-1">Скрипт нейтрализован, пользователь перенаправлен</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-white">Подозрительная активность</p>
+                                    <p class="text-xs text-gray-400">IP: 203.113.145.89 | Время: 14:18:07</p>
+                                    <p class="text-xs text-blue-400 mt-1">Множественные запросы, включена CAPTCHA</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-white">Проверка обновлений</p>
+                                    <p class="text-xs text-gray-400">Система | Время: 14:15:00</p>
+                                    <p class="text-xs text-blue-400 mt-1">Все компоненты защиты актуальны</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Encryption Process -->
+    <section id="protection" class="py-20 bg-gray-800/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl text-center font-bold mb-16">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Процесс шифрования</span>
+                <br>конфиденциальных данных
+            </h2>
+            
+            <div class="bg-gray-900 rounded-xl p-8 md:p-12 border border-gray-800">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <span class="text-2xl font-bold text-blue-400">1</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Сбор данных</h3>
+                        <p class="text-gray-400">Система идентифицирует конфиденциальные данные (логины, пароли, платежные реквизиты) на всех этапах работы с сайтом.</p>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <span class="text-2xl font-bold text-blue-400">2</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Шифрование</h3>
+                        <p class="text-gray-400">Данные шифруются с использованием гибридной системы (AES для данных, RSA для ключей) перед сохранением или передачей.</p>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="text-center">
+                    <div class="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6"> <span class="text-2xl font-bold text-blue-400">3</span> </div> <h3 class="text-xl font-bold text-white mb-3">Хранение</h3> <p class="text-gray-400">Зашифрованные данные распределяются в защищенном хранилище с контролем целостности и регулярным ротацией ключей.</p> </div> </div><!-- Encryption Visualization --><div class="mt-16 bg-gray-800/50 rounded-lg p-6 border border-gray-700"> <div class="flex flex-col md:flex-row items-center justify-between gap-8"> <div class="w-full md:w-1/3"> <div class="bg-gray-900 p-4 rounded-lg border border-gray-700"> <div class="text-xs font-mono text-blue-300 mb-2">Исходные данные:</div> <div class="text-sm font-mono text-white p-3 bg-gray-800 rounded">user=admin&pass=Secret123!</div> </div> </div>
+                    <div class="flex-shrink-0 text-blue-400">
+        <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+        </svg>
+    </div>
+
+    <div class="w-full md:w-1/3">
+        <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
+            <div class="text-xs font-mono text-blue-300 mb-2">Зашифрованные данные:</div>
+            <div class="text-sm font-mono text-gray-400 p-3 bg-gray-800 rounded">a5f8d3e0c1b7...9f2e4d6c8a0b</div>
         </div>
     </div>
-    
-    <!-- Конфеетти при открытии сундука -->
-    <canvas id="confetti-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
-</section>
+</div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const chest = document.getElementById('chest');
-        const closedChest = document.getElementById('closed-chest');
-        const openedChest = document.getElementById('opened-chest');
-        const chestGlow = document.getElementById('chest-glow');
-        const promoCode = document.getElementById('promo-code');
-        const gameInstruction = document.getElementById('game-instruction');
-        const copyButton = document.getElementById('copy-promo');
-        const canvas = document.getElementById('confetti-canvas');
-        
-        let confetti = null;
-        
-        // Инициализация конфеетти
-        function initConfetti() {
-            confetti = new ConfettiGenerator({
-                target: 'confetti-canvas',
-                max: 80,
-                size: 1.5,
-                animate: true,
-                props: ['circle', 'square', 'triangle', 'line'],
-                colors: [[255, 158, 0], [255, 190, 50], [255, 210, 100], [200, 120, 0]],
-                clock: 25,
-                rotate: true
-            });
-            confetti.render();
-        }
-        
-        // Открытие сундука
-        chest.addEventListener('click', function() {
-            if (openedChest.classList.contains('hidden')) {
-                // Анимация открытия
-                closedChest.classList.add('hidden');
-                openedChest.classList.remove('hidden');
-                chestGlow.style.opacity = '0.3';
-                
-                setTimeout(() => {
-                    chestGlow.style.opacity = '0';
-                }, 1000);
-                
-                // Показываем промокод
-                promoCode.classList.remove('hidden');
-                gameInstruction.classList.add('hidden');
-                copyButton.classList.remove('hidden');
-                
-                // Запускаем конфеетти
-                initConfetti();
-                setTimeout(() => {
-                    confetti.clear();
-                }, 3000);
-            }
-        });
-        
-        // Копирование промокода
-        copyButton.addEventListener('click', function() {
-            navigator.clipboard.writeText('STEAM10').then(() => {
-                const originalText = copyButton.innerHTML;
-                copyButton.innerHTML = `
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    Скопировано!
-                `;
-                
-                setTimeout(() => {
-                    copyButton.innerHTML = originalText;
-                }, 2000);
-            });
-        });
-    });
-</script>
+<div class="mt-8 flex justify-center">
+    <button id="live-encrypt" class="px-6 py-3 bg-blue-500/10 border border-blue-500 text-blue-400 rounded-lg hover:bg-blue-500/20 transition flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+        Зашифровать свои данные
+    </button>
+</div>
+</div> </div> </section><!-- Testimonials --><section class="py-20 bg-gray-900"> <div class="max-w-7xl mx-auto px-6"> <h2 class="text-3xl text-center font-bold mb-16"> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Отзывы клиентов</span> <br>о нашей системе защиты </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Testimonial 1 -->
+    <div class="security-card p-8 rounded-xl">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 font-bold">AK</div>
+            <div class="ml-4">
+                <h4 class="font-bold text-white">Алексей К.</h4>
+                <p class="text-sm text-gray-400">FinTech компания</p>
+            </div>
+        </div>
+        <p class="text-gray-300">"После внедрения системы SecureShield мы прошли аудит безопасности без единого замечания. За последний год не было ни одной утечки данных."</p>
+        <div class="mt-4 flex text-yellow-400">
+            ★★★★★
+        </div>
+    </div>
 
-<style>
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-15px); }
-    }
-    .animate-float {
-        animation: float 6s ease-in-out infinite;
-    }
-    .animate-float-delay {
-        animation: float 6s ease-in-out 1s infinite;
-    }
-</style>
+    <!-- Testimonial 2 -->
+    <div class="security-card p-8 rounded-xl">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 font-bold">МС</div>
+            <div class="ml-4">
+                <h4 class="font-bold text-white">Марина С.</h4>
+                <p class="text-sm text-gray-400">Онлайн-ритейл</p>
+            </div>
+        </div>
+        <p class="text-gray-300">"Система ежедневно блокирует сотни атак. Особенно впечатлила защита от брутфорса - количество попыток взлома сократилось на 95%."</p>
+        <div class="mt-4 flex text-yellow-400">
+            ★★★★★
+        </div>
+    </div>
 
-<!-- Подключаем библиотеку конфеетти -->
-<script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
+    <!-- Testimonial 3 -->
+    <div class="security-card p-8 rounded-xl">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 font-bold">ДИ</div>
+            <div class="ml-4">
+                <h4 class="font-bold text-white">Дмитрий И.</h4>
+                <p class="text-sm text-gray-400">Медицинский портал</p>
+            </div>
+        </div>
+        <p class="text-gray-300">"Благодаря гранулярному управлению доступом мы смогли обеспечить HIPAA-совместимость и работать с медицинскими данными пациентов."</p>
+        <div class="mt-4 flex text-yellow-400">
+            ★★★★★
+        </div>
+    </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Testimonial 1 -->
+    <div class="security-card p-8 rounded-xl">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 font-bold">AK</div>
+            <div class="ml-4">
+                <h4 class="font-bold text-white">Алексей К.</h4>
+                <p class="text-sm text-gray-400">FinTech компания</p>
+            </div>
+        </div>
+        <p class="text-gray-300">"После внедрения системы SecureShield мы прошли аудит безопасности без единого замечания. За последний год не было ни одной утечки данных."</p>
+        <div class="mt-4 flex text-yellow-400">
+            ★★★★★
+        </div>
+    </div>
 
-    @include('footer')
+    <!-- Testimonial 2 -->
+    <div class="security-card p-8 rounded-xl">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 font-bold">МС</div>
+            <div class="ml-4">
+                <h4 class="font-bold text-white">Марина С.</h4>
+                <p class="text-sm text-gray-400">Онлайн-ритейл</p>
+            </div>
+        </div>
+        <p class="text-gray-300">"Система ежедневно блокирует сотни атак. Особенно впечатлила защита от брутфорса - количество попыток взлома сократилось на 95%."</p>
+        <div class="mt-4 flex text-yellow-400">
+            ★★★★★
+        </div>
+    </div>
 
-    <script>
-        // FAQ Accordion
-        document.querySelectorAll('#faq button').forEach(button => {
-            button.addEventListener('click', () => {
-                const content = button.nextElementSibling;
-                const icon = button.querySelector('svg');
-                
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                    icon.classList.remove('rotate-180');
-                } else {
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                    icon.classList.add('rotate-180');
-                }
-            });
-        });
-        
-        // Case card animation on scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fadeIn');
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        document.querySelectorAll('.case-card').forEach(card => {
-            observer.observe(card);
-        });
-    </script>
-</body>
-</html>
+    <!-- Testimonial 3 -->
+    <div class="security-card p-8 rounded-xl">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 font-bold">ДИ</div>
+            <div class="ml-4">
+                <h4 class="font-bold text-white">Дмитрий И.</h4>
+                <p class="text-sm text-gray-400">Медицинский портал</p>
+            </div>
+        </div>
+        <p class="text-gray-300">"Благодаря гранулярному управлению доступом мы смогли обеспечить HIPAA-совместимость и работать с медицинскими данными пациентов."</p>
+        <div class="mt-4 flex text-yellow-400">
+            ★★★★★
+        </div>
+    </div>
+</div>
+</div> </section><!-- CTA Section --><section id="contact" class="py-20 bg-gradient-to-br from-blue-900/50 to-blue-800/50 relative overflow-hidden"> <!-- Animated background elements --> <div class="absolute inset-0 opacity-10"> <div class="absolute top-0 left-0 w-full h-full bg-repeat opacity-30" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMEwxMDAgMjVMOTAgNzVMNTAgMTAwTDEwIDc1TDAgMjVMNTAgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDA5NWZmIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvc3ZnPg==');"></div> </div><div class="max-w-4xl mx-auto px-6 text-center relative z-10"> <h2 class="text-4xl font-bold text-white mb-6"> Готовы защитить свой сайт? </h2> <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto"> Оставьте заявку и наши специалисты проведут бесплатный аудит безопасности вашего проекта </p>
+<form class="max-w-lg mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <input type="text" placeholder="Ваше имя" class="px-6 py-4 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <input type="email" placeholder="Email" class="px-6 py-4 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+    </div>
+    <div class="mb-4">
+        <input type="text" placeholder="URL вашего сайта" class="w-full px-6 py-4 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+    </div>
+    <div class="mb-6">
+        <textarea placeholder="Сообщение (описание вашего проекта)" class="w-full px-6 py-4 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent h-32"></textarea>
+    </div>
+    <button type="submit" class="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-lg hover:from-blue-400 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-blue-500/30 flex items-center justify-center transform hover:scale-[1.02]">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+        Отправить заявку
+    </button>
+</form>
+</div> </section><!-- Footer --><footer class="py-12 bg-gray-900 border-t border-gray-800"> <div class="max-w-7xl mx-auto px-6"> <div class="grid grid-cols-1 md:grid-cols-4 gap-8"> <div> <div class="flex items-center mb-6"> <svg class="w-10 h-10 text-blue-400 shield-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path> </svg> <span class="ml-3 text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">SecureShield</span> </div> <p class="text-gray-400 text-sm">Система защиты конфиденциальной информации веб-сайтов нового поколения.</p> </div>
+<div>
+        <h4 class="text-lg font-semibold text-white mb-6">Решения</h4>
+        <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Защита данных</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Предотвращение атак</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Аутентификация</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Мониторинг</a></li>
+        </ul>
+    </div>
+
+    <div>
+        <h4 class="text-lg font-semibold text-white mb-6">Ресурсы</h4>
+        <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Документация</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Блог о безопасности</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Частые вопросы</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Соответствие стандартам</a></li>
+        </ul>
+    </div>
+
+    <div>
+        <h4 class="text-lg font-semibold text-white mb-6">Контакты</h4>
+        <ul class="space-y-3">
+            <li class="flex items-center text-gray-400"><svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> +7 (495) 123-45-67</li>
+            <li class="flex items-center text-gray-400"><svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> info@secureshield.ru</li>
+            <li class="flex items-center text-gray-400"><svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Москва, ул. Безопасности, 42</li>
+        </ul>
+    </div>
+</div>
+
+<div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+    <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2023 SecureShield. Все права защищены.</p>
+    <div class="flex space-x-6">
+        <a href="#" class="text-gray-500 hover:text-blue-400 transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z"/></svg>
+        </a>
+        <a href="#" class="text-gray-500 hover:text-blue-400 transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+        <a href="#" class="text-gray-500 hover:text-blue-400 transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.825 0 1.572.349 2.096.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z"/></svg>
+        </a>
+    </div>
+</div>
+</div> </footer><!-- Scripts --><script> // Create data particles document.addEventListener('DOMContentLoaded', function() { const container = document.getElementById('particles'); for (let i = 0; i < 30; i++) { const particle = document.createElement('div'); particle.className = 'data-particle'; particle.style.left = `${Math.random() * 100}%`; particle.style.top = `${Math.random() * 100}%`; particle.style.animationDelay = `${Math.random() * 5}s`; particle.style.opacity = Math.random() * 0.5 + 0.1; particle.style.width = `${Math.random() * 6 + 4}px`; particle.style.height = particle.style.width; container.appendChild(particle); } // Simulate attack button document.getElementById('simulate-attack').addEventListener('click', function() { const attackContainer = document.querySelector('.hacker-attack'); // Create new attack lines for (let i = 0; i < 3; i++) { const attackLine = document.createElement('div'); attackLine.className = 'attack-line'; attackLine.style.top = `${Math.random() * 80 + 10}%`; attackLine.style.animationDelay = '0s'; attackContainer.appendChild(attackLine); // Remove after animation setTimeout(() => { attackLine.remove(); }, 3000); } // Create protection lines for (let i = 0; i < 2; i++) { const protectLine = document.createElement('div'); protectLine.className = 'protected-line'; protectLine.style.top = `${Math.random() * 80 + 10}%`; protectLine.style.width = `${Math.random() * 30 + 70}%`; protectLine.style.left = `${Math.random() * 15}%`; protectLine.style.animationDelay = '0s'; attackContainer.appendChild(protectLine); // Remove after animation setTimeout(() => { protectLine.remove(); }, 3000); } }); // Live encryption demo document.getElementById('live-encrypt').addEventListener('click', function() { const input = prompt('Введите текст для шифрования:'); if (input) { // Simple "encryption" for demo purposes const encrypted = btoa(input).split('').reverse().join('').substring(0, 24) + '...'; alert(`Результат шифрования:\n\n${encrypted}`); } }); }); </script></body> </html>
