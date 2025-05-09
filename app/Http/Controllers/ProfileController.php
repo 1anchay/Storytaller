@@ -5,106 +5,143 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 use App\Models\User;
-use App\Models\Transaction;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Show the profile edit form.
-     */
     public function edit()
     {
         $user = Auth::user();
         
+        Log::debug('Profile edit accessed', [
+            'user_id' => $user->id,
+            'ip' => request()->ip()
+        ]);
+    
         return view('profile.edit', [
-            'user' => $user,
-            'emailVerified' => $user->hasVerifiedEmail(),
-            'balance' => $user->balance,
-            'transactions' => Transaction::where('user_id', $user->id)
-                                      ->orderBy('created_at', 'desc')
-                                      ->take(5)
-                                      ->get()
+            'user' => $user
         ]);
     }
-
-    /**
-     * Update the user's profile.
-     */
-    public function update(Request $request)
+    public function updateAvatar(Request $request)
     {
-        $user = Auth::user();
-    
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'password' => ['nullable', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
     
-        $user->name = $validatedData['name'];
-    
-        // Убираем логику сброса email_verified_at
-        if ($user->email !== $validatedData['email']) {
-            $user->email = $validatedData['email'];
-        }
-    
-        // Если пароль не пустой, хешируем новый пароль
-        if (!empty($validatedData['password'])) {
-            $user->password = Hash::make($validatedData['password']);
-        }
-    
-        // Обрабатываем загрузку нового фото
-        if ($request->hasFile('profile_photo')) {
+        try {
+            $user = Auth::user();
+            $path = $request->file('avatar')->store('profile-photos', 'public');
+            
+            // Удаляем старое фото если есть
             if ($user->profile_photo_path) {
                 Storage::disk('public')->delete($user->profile_photo_path);
             }
             
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
-            $user->profile_photo_path = $path;
+            $user->update(['profile_photo_path' => $path]);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Аватар успешно обновлён',
+                'avatar_url' => asset('storage/'.$path)
+            ]);
+    
+        } catch (\Exception $e) {
+            Log::error('Avatar upload error: '.$e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Ошибка при загрузке аватара'
+            ], 500);
         }
-    
-        $user->save();
-    
-        return redirect()->route('profile.edit')
-            ->with('status', 'Профиль успешно обновлен!');
     }
-    
-
-    /**
-     * Show transaction history.
-     */
-    public function transactionHistory()
+    public function update(Request $request)
     {
-        $transactions = Transaction::where('user_id', Auth::id())
-                                ->orderBy('created_at', 'desc')
-                                ->paginate(10);
+        $user = Auth::user();
 
-        return view('profile.transactions', ['transactions' => $transactions]);
-    }
-
-    /**
-     * Get current balance (API).
-     */
-    public function getBalance(Request $request)
-    {
-        $user = $request->user();
-        
-        return response()->json([
-            'success' => true,
-            'balance' => $user->balance,
-            'currency' => '₽',
-            'last_updated' => $user->updated_at->toIso8601String()
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id)
+            ],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'current_password' => ['required_with:password'],
+            'password' => ['nullable', 'confirmed', 'min:12', 'different:current_password'],
+        ], [
+            'current_password.required_with' => 'Текущий пароль обязателен при изменении пароля',
+            'password.different' => 'Новый пароль должен отличаться от текущего',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()
+                ->route('profile.edit')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+            $data = $request->only(['name', 'email']);
+
+            // Проверка и обновление пароля
+            if ($request->filled('password')) {
+                if (!Hash::check($request->current_password, $user->password)) {
+                    return back()->withErrors(['current_password' => 'Неверный текущий пароль']);
+                }
+                $data['password'] = Hash::make($request->password);
+            }
+
+            // Обновление фото профиля
+            if ($request->hasFile('profile_photo')) {
+                $path = $request->file('profile_photo')->store('profile-photos', 'public');
+                
+                // Удаляем старое фото
+                if ($user->profile_photo_path) {
+                    Storage::disk('public')->delete($user->profile_photo_path);
+                }
+                
+                $data['profile_photo_path'] = $path;
+            }
+
+            $user->update($data);
+
+            return redirect()
+                ->route('profile.edit')
+                ->with('status', 'Профиль успешно обновлен!');
+
+        } catch (\Exception $e) {
+            Log::error('Profile update error: ' . $e->getMessage());
+            
+            return redirect()
+                ->route('profile.edit')
+                ->with('error', 'Произошла ошибка при обновлении профиля');
+        }
+    }
+
+    public function removeAvatar()
+    {
+        $user = Auth::user();
+
+        try {
+            if ($user->profile_photo_path) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+                $user->update(['profile_photo_path' => null]);
+            }
+
+            return response()->json(['success' => true]);
+
+        } catch (\Exception $e) {
+            Log::error('Avatar remove error: ' . $e->getMessage());
+            return response()->json(['error' => 'Ошибка при удалении аватара'], 500);
+        }
     }
 }

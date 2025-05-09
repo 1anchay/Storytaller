@@ -209,6 +209,27 @@
                     @enderror
                 </div>
 
+                <!-- Checkbox для принятия условий -->
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="terms" name="terms" type="checkbox" required
+                               class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-600 rounded bg-gray-700">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="terms" class="font-medium text-gray-300">
+                            Я принимаю <a href="#" class="text-blue-400 hover:text-blue-300">условия использования</a> и <a href="#" class="text-blue-400 hover:text-blue-300">политику конфиденциальности</a>
+                        </label>
+                    </div>
+                </div>
+                @error('terms')
+                    <p class="mt-1 text-sm text-red-400 flex items-center">
+                        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ $message }}
+                    </p>
+                @enderror
+
                 <!-- Кнопка регистрации -->
                 <div class="pt-2">
                     <button type="submit" class="cyber-btn w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 overflow-hidden">
@@ -277,19 +298,6 @@
         } else {
             meter.style.background = 'linear-gradient(to right, #ef4444, #f59e0b, #84cc16)';
         }
-    }
-</script>
-<script>
-    function updateSecurityMeter(value) {
-        const meter = document.getElementById('security-meter');
-        let strength = 0;
-        if (value.length >= 8) strength++;
-        if (/[A-Z]/.test(value)) strength++;
-        if (/[0-9]/.test(value)) strength++;
-        if (/[\W]/.test(value)) strength++;
-
-        const width = ['0%', '33%', '66%', '100%'][strength] || '0%';
-        meter.style.width = width;
     }
 </script>
 

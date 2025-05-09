@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,4 +52,10 @@ class Transaction extends Model
     public const METHOD_CRYPTO = 'crypto';
     public const METHOD_QIWI = 'qiwi';
     public const METHOD_YOOMONEY = 'yoomoney';
+
+    // Скоуп для фильтрации транзакций по пользователю
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
 }

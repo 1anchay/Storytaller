@@ -1,9 +1,7 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     ReactController,
-    CaseController,
     ProfileController,
     BalanceController,
     AdminController,
@@ -15,7 +13,6 @@ use App\Http\Controllers\Auth\{
     RegisteredUserController,
     ForgotPasswordController,
     ResetPasswordController,
-    VerificationController
 };
 
 /*
@@ -34,13 +31,6 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/yslovya', 'yslovya')->name('yslovya');
     Route::get('/blog', 'blog')->name('blog');
     Route::get('/audit', 'audit')->name('audit');
-});
-
-// Публичные кейсы (оптимизированная версия)
-Route::prefix('cases')->name('cases.')->controller(CaseController::class)->group(function () {
-    for ($i = 1; $i <= 8; $i++) {
-        Route::get("/case{$i}", "showCase{$i}")->name("case{$i}");
-    }
 });
 
 // Гостевые маршруты
@@ -69,16 +59,14 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-
-// Авторизованные маршруты
 Route::middleware(['auth'])->group(function () {
     // Профиль
     Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
         Route::get('/edit', 'edit')->name('edit');
         Route::put('/update', 'update')->name('update');
-        Route::get('/transactions', 'transactionHistory')->name('transactions');
+        Route::post('/remove-avatar', 'removeAvatar')->name('remove-avatar');
+        Route::post('/update-avatar', 'updateAvatar')->name('update-avatar'); // Добавьте эту строку
     });
-
     // Баланс
     Route::controller(BalanceController::class)->prefix('balance')->name('balance.')->group(function () {
         Route::get('/', 'showForm')->name('form');
@@ -88,25 +76,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/gateway/{transaction}', 'paymentGateway')->name('gateway');
     });
 
-    // Кейсы (защищенные)
-    Route::controller(CaseController::class)->prefix('cases')->name('cases.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{case}', 'show')->name('show');
-        Route::get('/buy/{case}', 'buy')->name('buy');
-        Route::post('/check-balance', 'checkBalance')->name('check-balance');
-        Route::post('/purchase-case', 'purchaseCase')->name('purchase');
-    });
-
     // Чат
     Route::controller(ChatController::class)->prefix('chat')->name('chat.')->group(function () {
         Route::post('/send', 'sendMessage')->name('send');
         Route::get('/messages', 'getMessages')->name('messages');
     });
-
-    // Dashboard
-    Route::get('/dashboard', fn() => redirect()->route('profile.edit'))->name('dashboard');
 });
 
 // Админка

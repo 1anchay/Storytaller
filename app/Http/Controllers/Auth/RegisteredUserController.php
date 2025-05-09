@@ -9,15 +9,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rules;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Log; // Подключение логирования
 
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Отображение страницы регистрации.
      */
     public function create(): View
     {
@@ -25,50 +23,50 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * Обработка запроса на регистрацию.
      */
     public function store(Request $request): RedirectResponse
-{
-    $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-        'password' => [
-            'required',
-            'confirmed',
-            Password::min(8)
-                ->letters()
-                ->mixedCase()
-                ->numbers()
-                ->symbols()
-                ->uncompromised(),
-        ],
-        'terms' => ['required', 'accepted'],
-    ], [
-        'terms.required' => 'Вы должны принять условия использования',
-    ]);
-
-    try {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'email_verified_at' => now(), // Автоматически подтверждаем email
-            'is_active' => true,
+    {
+        // Валидация данных
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'terms' => ['required', 'accepted'],
         ]);
 
-        Auth::login($user);
+        try {
+            // Создаем нового пользователя
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'user', // Добавляем роль по умолчанию
+                'is_active' => true, // Активируем пользователя
+                'balance' => 0, // Начальный баланс
+                'email_verified_at' => now(), // Автоверификация
+            ]);
 
-        activity()
-            ->causedBy($user)
-            ->log('Новый пользователь зарегистрировался');
+            // Событие регистрации пользователя
+            event(new Registered($user));
 
-        return redirect()->route('dashboard')->with('success', 'Вы успешно зарегистрированы!');
-    } catch (\Exception $e) {
-        Log::error('Ошибка при регистрации пользователя', ['error' => $e->getMessage()]);
-        return back()->with('error', 'Произошла ошибка при регистрации. Попробуйте еще раз.');
+            // Авторизация пользователя
+            Auth::login($user);
+
+            // Редирект на главную страницу с сообщением
+            return redirect()->route('home')
+                ->with('success', 'Регистрация прошла успешно! Добро пожаловать!');
+                
+        } catch (\Exception $e) {
+            // Логируем ошибку
+            \Log::error('Registration error: ' . $e->getMessage());
+            
+            // Возвращаем с ошибкой
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'registration' => 'Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.'
+                ]);
+        }
     }
-}
-
 }

@@ -45,7 +45,7 @@
                 </p>
             </div>
 
-            <form method="POST" action="{{ route('verification.send') }}" class="mt-6">
+            <form method="POST" action="{{ route('dashboard') }}" class="mt-6">
                 @csrf
                 <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition duration-300">
                     Отправить письмо снова

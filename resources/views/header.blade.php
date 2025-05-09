@@ -121,10 +121,7 @@
         
       
         @if (Auth::check())
-    <script>
-        // Автоматический редирект на страницу edit
-        window.location.href = "{{ route('profile.edit') }}";
-    </script>
+  
     
     <div class="pt-4 pb-3 border-t border-gray-700">
         <div class="flex items-center px-5">

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -47,18 +46,18 @@ class LoginController extends Controller
     }
 
     protected function attemptLogin(Request $request)
-{
-    $user = User::where($this->username(), $request->{$this->username()})->first();
+    {
+        $user = User::where($this->username(), $request->{$this->username()})->first();
 
-    if (!$user || !$user->is_active) {
-        return false;
+        if (!$user || !$user->is_active) {  // Проверьте поле is_active в таблице
+            return false;
+        }
+
+        return $this->guard()->attempt(
+            $this->credentials($request),
+            $request->filled('remember')
+        );
     }
-
-    return $this->guard()->attempt(
-        $this->credentials($request),
-        $request->filled('remember')
-    );
-}
 
     protected function credentials(Request $request)
     {
@@ -74,6 +73,7 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, User $user)
     {
+        // Логируем успешный вход
         $user->update([
             'last_login_at' => now(),
             'last_login_ip' => $request->ip()
