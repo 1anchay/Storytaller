@@ -404,7 +404,7 @@
                                 </div>
                                 <div>
                                     <h4 class="text-white font-bold">Офис</h4>
-                                    <p class="text-gray-400">Москва, ул. Безопасности, 15</p>
+                                    <p class="text-gray-400">Севастополь, ул. Безопасности, 15</p>
                                 </div>
                             </div>
                         </div>

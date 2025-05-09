@@ -52,6 +52,12 @@
                 </button>
             </form>
 
+            <div class="mt-4">
+                <a href="{{ route('profile.edit') }}" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300">
+                    Перейти в профиль
+                </a>
+            </div>
+
             <div class="mt-6 text-center">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

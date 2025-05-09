@@ -69,15 +69,9 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-// Подтверждение email
-Route::middleware('auth')->controller(VerificationController::class)->group(function () {
-    Route::get('/email/verify', 'show')->name('verification.notice');
-    Route::get('/email/verify/{id}/{hash}', 'verify')->middleware('signed')->name('verification.verify');
-    Route::post('/email/resend', 'resend')->name('verification.send');
-});
 
 // Авторизованные маршруты
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Профиль
     Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
         Route::get('/edit', 'edit')->name('edit');

@@ -71,7 +71,7 @@
                     </svg>
                 </div>
                 <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 tracking-tight">
-                    Secure<span class="text-white">Lock</span>
+                    Secure<span class="text-white">Shield</span>
                 </span>
             </a>
             <p class="mt-2 text-sm text-gray-400">Система защищенной регистрации</p>
@@ -277,6 +277,19 @@
         } else {
             meter.style.background = 'linear-gradient(to right, #ef4444, #f59e0b, #84cc16)';
         }
+    }
+</script>
+<script>
+    function updateSecurityMeter(value) {
+        const meter = document.getElementById('security-meter');
+        let strength = 0;
+        if (value.length >= 8) strength++;
+        if (/[A-Z]/.test(value)) strength++;
+        if (/[0-9]/.test(value)) strength++;
+        if (/[\W]/.test(value)) strength++;
+
+        const width = ['0%', '33%', '66%', '100%'][strength] || '0%';
+        meter.style.width = width;
     }
 </script>
 

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
@@ -14,7 +13,7 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/profile/edit';
 
     public function __construct()
     {
@@ -48,18 +47,18 @@ class LoginController extends Controller
     }
 
     protected function attemptLogin(Request $request)
-    {
-        $user = User::where($this->username(), $request->{$this->username()})->first();
+{
+    $user = User::where($this->username(), $request->{$this->username()})->first();
 
-        if (!$user || !$user->is_active) {
-            return false;
-        }
-
-        return $this->guard()->attempt(
-            $this->credentials($request),
-            $request->filled('remember')
-        );
+    if (!$user || !$user->is_active) {
+        return false;
     }
+
+    return $this->guard()->attempt(
+        $this->credentials($request),
+        $request->filled('remember')
+    );
+}
 
     protected function credentials(Request $request)
     {

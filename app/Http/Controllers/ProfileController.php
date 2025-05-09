@@ -44,26 +44,27 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-
+    
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'password' => ['nullable', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
+    
         $user->name = $validatedData['name'];
-        
+    
+        // Убираем логику сброса email_verified_at
         if ($user->email !== $validatedData['email']) {
             $user->email = $validatedData['email'];
-            $user->email_verified_at = null;
-            $user->sendEmailVerificationNotification();
         }
-
+    
+        // Если пароль не пустой, хешируем новый пароль
         if (!empty($validatedData['password'])) {
             $user->password = Hash::make($validatedData['password']);
         }
-
+    
+        // Обрабатываем загрузку нового фото
         if ($request->hasFile('profile_photo')) {
             if ($user->profile_photo_path) {
                 Storage::disk('public')->delete($user->profile_photo_path);
@@ -72,13 +73,13 @@ class ProfileController extends Controller
             $path = $request->file('profile_photo')->store('profile-photos', 'public');
             $user->profile_photo_path = $path;
         }
-
+    
         $user->save();
-
+    
         return redirect()->route('profile.edit')
-            ->with('status', 'Профиль успешно обновлен!')
-            ->with('verified', $user->hasVerifiedEmail());
+            ->with('status', 'Профиль успешно обновлен!');
     }
+    
 
     /**
      * Show transaction history.

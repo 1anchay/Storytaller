@@ -206,60 +206,140 @@
                     </div>
                 </div>
             </div>
+<!-- Инструкция по установке -->
+<div class="installation-guide bg-gray-800/50 border border-gray-700 rounded-xl p-6 mb-10 backdrop-blur-sm">
+    <div class="flex items-center mb-6">
+        <div class="bg-blue-500/20 p-2 rounded-lg mr-4">
+            <svg class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white">Установка расширения</h3>
+    </div>
+    
+    <ol class="space-y-4 text-gray-300">
+        <li class="flex items-start">
+            <span class="flex-shrink-0 bg-blue-500/10 text-blue-400 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5">
+                1
+            </span>
+            <span>Скачайте Rar-архив расширения</span>
+        </li>
+        <li class="flex items-start">
+            <span class="flex-shrink-0 bg-blue-500/10 text-blue-400 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5">
+                2
+            </span>
+            <span>Распакуйте его в удобную папку</span>
+        </li>
+        <li class="flex items-start">
+            <span class="flex-shrink-0 bg-blue-500/10 text-blue-400 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5">
+                3
+            </span>
+            <span>Откройте в Chrome страницу <code class="bg-gray-700 text-blue-300 px-2 py-1 rounded-md">chrome://extensions/</code></span>
+        </li>
+        <li class="flex items-start">
+            <span class="flex-shrink-0 bg-blue-500/10 text-blue-400 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5">
+                4
+            </span>
+            <span>Включите <span class="font-medium text-white">"Режим разработчика"</span></span>
+        </li>
+        <li class="flex items-start">
+            <span class="flex-shrink-0 bg-blue-500/10 text-blue-400 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5">
+                5
+            </span>
+            <span>Нажмите <span class="font-medium text-white">"Загрузить распакованное расширение"</span></span>
+        </li>
+        <li class="flex items-start">
+            <span class="flex-shrink-0 bg-blue-500/10 text-blue-400 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5">
+                6
+            </span>
+            <span>Выберите распакованную папку</span>
+        </li>
+    </ol>
+    
+    <div class="mt-6 p-4 bg-gray-700/50 rounded-lg border-l-4 border-yellow-400">
+        <div class="flex">
+            <svg class="h-5 w-5 text-yellow-400 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <span class="text-yellow-300 text-sm">Для работы расширения необходим Google Chrome версии 89 или выше</span>
+        </div>
+    </div>
+</div>
 
-            <!-- Раздел 3 -->
-            <div class="security-card overflow-hidden">
-                <div class="flex items-center bg-gradient-to-r from-indigo-700 to-indigo-800 p-6">
-                    <div class="bg-indigo-500/20 p-3 rounded-lg mr-6">
-                        <svg class="h-8 w-8 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-bold text-white">Мониторинг и реагирование</h2>
-                </div>
-                <div class="p-8">
-                    <div class="flex flex-col md:flex-row items-center">
-                        <div class="w-full md:w-1/2 mb-6 md:mb-0 md:pr-6">
-                            <h3 class="text-xl font-bold text-white mb-4">24/7 Наблюдение</h3>
-                            <p class="text-gray-400 mb-4">Наша команда экспертов круглосуточно отслеживает угрозы и оперативно реагирует на инциденты.</p>
-                            <ul class="space-y-3 text-gray-300">
-                                <li class="flex items-start">
-                                    <span class="flex-shrink-0 bg-indigo-500/10 text-indigo-400 rounded-full p-1 mr-3">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                        </svg>
-                                    </span>
-                                    <span>Обнаружение аномалий в реальном времени</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="flex-shrink-0 bg-indigo-500/10 text-indigo-400 rounded-full p-1 mr-3">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                        </svg>
-                                    </span>
-                                    <span>Автоматические уведомления об угрозах</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="w-full md:w-1/2">
-                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Мониторинг" class="rounded-lg shadow-lg">
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Кнопка скачивания -->
+<div class="text-center mt-12">
+    <h3 class="text-2xl font-bold text-white mb-6">Хотите узнать больше </h3>
+    <p class="text-xl text-blue-200 mb-8">Скачайте расширение </p>
+    
+    <!-- Обновленная кнопка скачивания с обработчиком -->
+    <button onclick="downloadFile()" class="download-btn inline-flex items-center px-8 py-4 rounded-full text-white font-bold text-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        Скачать расширение (91 kB)
+    </button>
+    
+    <p class="text-gray-500 mt-4">Последнее обновление: {{ date('d.m.Y') }}</p>
+</div>
 
-            <!-- Кнопка скачивания -->
-            <div class="text-center mt-12">
-                <h3 class="text-2xl font-bold text-white mb-6">Хотите узнать больше о наших услугах?</h3>
-                <p class="text-xl text-blue-200 mb-8">Скачайте полный каталог услуг в формате PDF</p>
-                <a href="/downloads/services-catalog.pdf" download class="download-btn inline-flex items-center px-8 py-4 rounded-full text-white font-bold text-lg">
-                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                    </svg>
-                    Скачать каталог (2.4 MB)
-                </a>
-                <p class="text-gray-500 mt-4">Последнее обновление: {{ date('d.m.Y') }}</p>
-            </div>
+<script>
+// Функция для скачивания файла
+function downloadFile() {
+    
+    const fileUrl = '/downloads/SecureShield.rar';
+    
+    
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    
+    
+    link.download = 'SecureShield.rar'; 
+    
+   
+    document.body.appendChild(link);
+    
+    
+    link.click();
+    
+   
+    document.body.removeChild(link);
+    
+    
+    console.log('Download initiated:', fileUrl);
+    
+    
+}
+</script>
+
+<style>
+.download-btn {
+    position: relative;
+    overflow: hidden;
+}
+.download-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0) 45%,
+        rgba(255,255,255,0.3) 50%,
+        rgba(255,255,255,0) 55%,
+        rgba(255,255,255,0) 100%
+    );
+    transform: rotate(30deg);
+    animation: shine 3s infinite;
+}
+@keyframes shine {
+    0% { left: -100%; top: -100%; }
+    20% { left: 100%; top: 100%; }
+    100% { left: 100%; top: 100%; }
+}
+</style>
         </div>
     </div>
 </div>

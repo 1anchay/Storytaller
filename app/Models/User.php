@@ -118,11 +118,6 @@ class User extends Authenticatable implements MustVerifyEmail
         }
     }
 
-    /**
-     * Проверка на подтверждение email
-     */
-    public function markEmailAsVerified(): void
-    {
-        $this->update(['email_verified_at' => now()]);
-    }
+  
+    
 }

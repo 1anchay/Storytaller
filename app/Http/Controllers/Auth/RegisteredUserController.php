@@ -30,58 +30,45 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        // Валидация данных
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-                    ->uncompromised(),
-            ],
-            'terms' => ['required', 'accepted'],
-        ], [
-            'terms.required' => 'Вы должны принять условия использования',
+{
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+        'password' => [
+            'required',
+            'confirmed',
+            Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised(),
+        ],
+        'terms' => ['required', 'accepted'],
+    ], [
+        'terms.required' => 'Вы должны принять условия использования',
+    ]);
+
+    try {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'email_verified_at' => now(), // Автоматически подтверждаем email
+            'is_active' => true,
         ]);
 
-        // Логирование всех данных, пришедших с формы регистрации
-        Log::info('Запрос на регистрацию', $request->all());
+        Auth::login($user);
 
-        try {
-            // Создание пользователя
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'email_verification_token' => Str::random(40),
-                'is_active' => true,
-            ]);
+        activity()
+            ->causedBy($user)
+            ->log('Новый пользователь зарегистрировался');
 
-            // Логирование успешного создания пользователя
-            Log::info('Пользователь создан', ['user' => $user]);
-
-            // Генерация события регистрации
-            event(new Registered($user));
-
-            // Логин пользователя после регистрации
-            Auth::login($user);
-
-            // Логирование активности
-            activity()
-                ->causedBy($user)
-                ->log('Новый пользователь зарегистрировался');
-
-            return redirect()->route('dashboard')->with('success', 'Вы успешно зарегистрированы!');
-        } catch (\Exception $e) {
-            // Логирование ошибки в случае исключения
-            Log::error('Ошибка при регистрации пользователя', ['error' => $e->getMessage()]);
-            return back()->with('error', 'Произошла ошибка при регистрации. Попробуйте еще раз.');
-        }
+        return redirect()->route('dashboard')->with('success', 'Вы успешно зарегистрированы!');
+    } catch (\Exception $e) {
+        Log::error('Ошибка при регистрации пользователя', ['error' => $e->getMessage()]);
+        return back()->with('error', 'Произошла ошибка при регистрации. Попробуйте еще раз.');
     }
+}
+
 }

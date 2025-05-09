@@ -83,15 +83,7 @@
           </a>
         @endif
 
-        <!-- Кнопка смены темы -->
-        <button id="theme-toggle" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-all duration-200 shadow-md transform hover:scale-110 active:scale-95">
-          <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-300 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        </button>
+        
 
         <!-- Мобильное меню (бургер) -->
         <button id="mobile-menu-button" class="md:hidden w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-all duration-200">
@@ -128,78 +120,117 @@
         
         
       
-      @if (Auth::check())
-        <div class="pt-4 pb-3 border-t border-gray-700">
-          <div class="flex items-center px-5">
+        @if (Auth::check())
+    <script>
+        // Автоматический редирект на страницу edit
+        window.location.href = "{{ route('profile.edit') }}";
+    </script>
+    
+    <div class="pt-4 pb-3 border-t border-gray-700">
+        <div class="flex items-center px-5">
             <div class="flex-shrink-0">
-              <img src="{{ Auth::user()->profile_photo_url }}" alt="User Photo" class="h-10 w-10 rounded-full border-2 border-blue-400">
+                <img src="{{ Auth::user()->profile_photo_url }}" alt="User Photo" class="h-10 w-10 rounded-full border-2 border-blue-400">
             </div>
             <div class="ml-3">
-              <div class="text-base font-medium text-white">{{ Auth::user()->name }}</div>
-              <div class="text-sm font-medium text-gray-400">Verified User</div>
+                <div class="text-base font-medium text-white">{{ Auth::user()->name }}</div>
+                <div class="text-sm font-medium text-gray-400">Verified User</div>
             </div>
-          </div>
-          <div class="mt-3 px-2 space-y-1">
+        </div>
+        <div class="mt-3 px-2 space-y-1">
             <a href="{{ route('profile.edit') }}" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700/50 hover:text-indigo-300 flex items-center space-x-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <span>Настройки</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Настройки</span>
             </a>
             <form action="{{ route('logout') }}" method="POST">
-              @csrf
-              <button type="submit" class="block w-full px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700/50 hover:text-red-300 flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span>Выход</span>
-              </button>
+                @csrf
+                <button type="submit" class="block w-full px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700/50 hover:text-red-300 flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span>Выход</span>
+                </button>
             </form>
-          </div>
         </div>
-      @endif
     </div>
-  </div>
+@endif
 
   <script>
-    // Переключение темы
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const sunIcon = document.getElementById('sun-icon');
-    const moonIcon = document.getElementById('moon-icon');
-    const html = document.documentElement;
+    // Ждем полной загрузки DOM
+    document.addEventListener('DOMContentLoaded', function() {
+        // Элементы для переключения темы
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        const html = document.documentElement;
 
-    // Проверяем сохраненную тему
-    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      html.classList.add('dark');
-      sunIcon.classList.add('hidden');
-      moonIcon.classList.remove('hidden');
-    } else {
-      html.classList.remove('dark');
-      sunIcon.classList.remove('hidden');
-      moonIcon.classList.add('hidden');
-    }
+        // Проверяем сохраненную тему или системные настройки
+        function checkTheme() {
+            if (localStorage.getItem('theme') === 'dark' || 
+                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                enableDarkMode();
+            } else {
+                enableLightMode();
+            }
+        }
 
-    themeToggleBtn.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      
-      if (html.classList.contains('dark')) {
-        localStorage.setItem('theme', 'dark');
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
-      } else {
-        localStorage.setItem('theme', 'light');
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
-      }
+        // Включение темной темы
+        function enableDarkMode() {
+            html.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+            if (sunIcon) sunIcon.classList.add('hidden');
+            if (moonIcon) moonIcon.classList.remove('hidden');
+        }
+
+        // Включение светлой темы
+        function enableLightMode() {
+            html.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+            if (sunIcon) sunIcon.classList.remove('hidden');
+            if (moonIcon) moonIcon.classList.add('hidden');
+        }
+
+        // Инициализация темы при загрузке
+        checkTheme();
+
+        // Обработчик переключения темы
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                if (html.classList.contains('dark')) {
+                    enableLightMode();
+                } else {
+                    enableDarkMode();
+                }
+            });
+        }
+
+        // Обработчик изменения системных настроек темы
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                if (e.matches) {
+                    enableDarkMode();
+                } else {
+                    enableLightMode();
+                }
+            }
+        });
+
+        // Мобильное меню
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenu.classList.toggle('block');
+                
+                // Анимация иконки гамбургера
+                const bars = mobileMenuButton.querySelectorAll('span');
+                bars.forEach(bar => bar.classList.toggle('active'));
+            });
+        }
     });
-
-    // Мобильное меню
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    mobileMenuButton.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
-  </script>
+</script>
 </header>
