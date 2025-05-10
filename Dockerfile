@@ -18,21 +18,22 @@ WORKDIR /var/www
 # Копируем файлы приложения
 COPY . .
 
-# Установка зависимостей PHP
-RUN composer install --no-dev --optimize-autoloader
+# Очистка кэша Composer перед установкой зависимостей
+RUN composer clear-cache
+
+# Устанавливаем зависимости PHP
+RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction -vvv
 
 # Установка зависимостей Node.js и сборка фронтенда
 RUN npm install && npm run build
-
-# Очистка кэша и повторная установка зависимостей
-RUN composer clear-cache && composer install --no-dev --optimize-autoloader
 
 # Кэш Laravel
 RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Установим права на каталоги Laravel
+RUN chown -R www-data:www-data /var/www /var/www/storage /var/www/bootstrap/cache /var/www/vendor
 
 # Stage 2: Финальный контейнер
 FROM php:8.2-fpm
@@ -41,7 +42,7 @@ FROM php:8.2-fpm
 COPY --from=build /var/www /var/www
 
 # Устанавливаем права на каталоги, где Laravel будет писать
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/vendor
 
 WORKDIR /var/www
 
