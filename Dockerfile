@@ -15,10 +15,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 
 WORKDIR /var/www
 
+# Копируем файлы приложения
 COPY . .
 
-# Установка зависимостей
+# Установка зависимостей PHP
 RUN composer install --no-dev --optimize-autoloader
+
+# Установка зависимостей Node.js и сборка фронтенда
 RUN npm install && npm run build
 
 # Кэш Laravel
@@ -29,10 +32,16 @@ RUN php artisan config:cache && \
 # Stage 2: Финальный контейнер
 FROM php:8.2-fpm
 
+# Копируем файлы из предыдущего этапа
 COPY --from=build /var/www /var/www
+
+# Устанавливаем права на каталоги, где Laravel будет писать
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 WORKDIR /var/www
 
+# Открытие порта 8000 для сервера Laravel
 EXPOSE 8000
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Выполнение миграций и запуск сервера
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
