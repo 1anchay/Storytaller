@@ -4,27 +4,27 @@ FROM php:8.2-fpm AS build
 # Установим зависимости и инструменты
 RUN apt-get update && apt-get install -y \
     git unzip curl libpng-dev libonig-dev libxml2-dev zip \
-    libzip-dev npm nodejs
+    libzip-dev npm nodejs sqlite3
 
 # Установка Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Установка Node.js и NPM (если нужно)
+# Установка Node.js и NPM
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
 WORKDIR /var/www
 
-# Копируем файлы приложения
+# Копируем файлы проекта
 COPY . .
 
-# Очистка кэша Composer перед установкой зависимостей
+# Очистка кэша Composer
 RUN composer clear-cache
 
-# Устанавливаем зависимости PHP
-RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction -vvv
+# Установка зависимостей
+RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
 
-# Установка зависимостей Node.js и сборка фронтенда
+# Сборка фронтенда
 RUN npm install && npm run build
 
 # Кэш Laravel
@@ -32,22 +32,29 @@ RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
 
-# Установим права на каталоги Laravel
-RUN chown -R www-data:www-data /var/www /var/www/storage /var/www/bootstrap/cache /var/www/vendor
+# Установим права
+RUN chown -R www-data:www-data /var/www
 
 # Stage 2: Финальный контейнер
 FROM php:8.2-fpm
 
-# Копируем файлы из предыдущего этапа
-COPY --from=build /var/www /var/www
+# Установка SQLite (важно!)
+RUN apt-get update && apt-get install -y sqlite3
 
-# Устанавливаем права на каталоги, где Laravel будет писать
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/vendor
+# Копируем приложение
+COPY --from=build /var/www /var/www
 
 WORKDIR /var/www
 
-# Открытие порта 8000 для сервера Laravel
+# Создаём базу, если её нет (чтобы избежать 500)
+RUN mkdir -p database && touch database/database.sqlite
+
+# Устанавливаем правильные права
+RUN chown -R www-data:www-data storage bootstrap/cache database && \
+    chmod -R 775 storage bootstrap/cache database
+
+# Laravel порт
 EXPOSE 8000
 
-# Выполнение миграций и запуск сервера
+# CMD: Миграция и запуск сервера
 CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
