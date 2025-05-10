@@ -7,7 +7,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/sass/app.scss',
-                'resources/js/app.js',
+                'resources/js/app.js',  // добавь сюда другие файлы, если нужно
             ],
             refresh: true,
         }),
@@ -22,7 +22,13 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            vue: 'vue/dist/vue.esm-bundler.js',
+            vue: 'vue/dist/vue.esm-bundler.js',  // используешь сборку vue для разработки
+        },
+    },
+    server: {
+        proxy: {
+            // Прокси для Laravel API, если используется на другом порту
+            '/app': 'http://localhost',
         },
     },
 });
