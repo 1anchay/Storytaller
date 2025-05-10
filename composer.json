@@ -39,8 +39,7 @@
         "start": "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi",
-            "@php artisan cache:clear"
+            "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -50,20 +49,26 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi",
+            "@php artisan key:generate --ansi"
+        ],
+        "render-build": [
             "@php artisan storage:link",
-            "@php artisan migrate --force"
+            "@php artisan optimize:clear"
         ],
         "render-post-deploy": [
             "@php artisan migrate --force",
-            "@php artisan storage:link",
-            "@php artisan optimize:clear",
             "@php artisan view:cache",
             "@php artisan event:cache"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --host=0.0.0.0 --port=8000\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --host=0.0.0.0 --port=8000\" \"npm run dev\" --names=server,vite"
+        ],
+        "docker-build": [
+            "@php artisan cache:clear",
+            "@php artisan config:clear",
+            "@php artisan route:clear",
+            "@php artisan view:clear"
         ]
     },
     "extra": {
@@ -78,7 +83,8 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
-        }
+        },
+        "platform-check": false
     },
     "minimum-stability": "stable",
     "prefer-stable": true
