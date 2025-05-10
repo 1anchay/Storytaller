@@ -24,10 +24,15 @@ RUN composer install --no-dev --optimize-autoloader
 # Установка зависимостей Node.js и сборка фронтенда
 RUN npm install && npm run build
 
+# Очистка кэша и повторная установка зависимостей
+RUN composer clear-cache && composer install --no-dev --optimize-autoloader
+
 # Кэш Laravel
 RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Stage 2: Финальный контейнер
 FROM php:8.2-fpm
