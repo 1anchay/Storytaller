@@ -7,7 +7,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/sass/app.scss',
-                'resources/js/app.js',  // добавь сюда другие файлы, если нужно
+                'resources/js/app.js',
             ],
             refresh: true,
         }),
@@ -22,13 +22,24 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            vue: 'vue/dist/vue.esm-bundler.js',  // используешь сборку vue для разработки
+            vue: 'vue/dist/vue.esm-bundler.js',
         },
     },
     server: {
+        host: '0.0.0.0',  // Важно для Render
+        port: process.env.PORT || 5173,  // Используем порт из переменной окружения
+        strictPort: true,
         proxy: {
-            // Прокси для Laravel API, если используется на другом порту
-            '/app': 'http://localhost',
+            '/': {
+                target: `http://localhost:${process.env.PORT || 8000}`,
+                changeOrigin: true,
+                secure: false,
+            },
         },
+    },
+    build: {
+        manifest: true,
+        outDir: 'public/build',
+        emptyOutDir: true,
     },
 });

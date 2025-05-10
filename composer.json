@@ -7,11 +7,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-pdo": "*",
+        "ext-sqlite3": "*",
         "blade-ui-kit/blade-heroicons": "^2.6",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.10.1",
-        "laravel/ui": "^4.6"
+        "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -35,24 +36,34 @@
         }
     },
     "scripts": {
+        "start": "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan cache:clear"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\""
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-            "@php artisan migrate --graceful --ansi"
+            "@php artisan storage:link",
+            "@php artisan migrate --force"
+        ],
+        "render-post-deploy": [
+            "@php artisan migrate --force",
+            "@php artisan storage:link",
+            "@php artisan optimize:clear",
+            "@php artisan view:cache",
+            "@php artisan event:cache"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --host=0.0.0.0 --port=8000\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
         ]
     },
     "extra": {
