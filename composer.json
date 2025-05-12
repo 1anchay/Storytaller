@@ -1,27 +1,14 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
-    "license": "MIT",
     "require": {
         "php": "^8.2",
-        "ext-pdo": "*",
-        "ext-sqlite3": "*",
-        "blade-ui-kit/blade-heroicons": "^2.6",
-        "laravel/framework": "^12.0",
-        "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/framework": "^10.0",
+        "laravel/sanctum": "^3.3"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
-        "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
-        "laravel/sail": "^1.41",
-        "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "laravel/tinker": "^2.8"
     },
     "autoload": {
         "psr-4": {
@@ -30,51 +17,26 @@
             "Database\\Seeders\\": "database/seeders/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
     "scripts": {
-        "start": "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi"
         ],
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\""
-        ],
-        "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
+        "post-install-cmd": [
+            "@php artisan storage:link"
         ],
         "render-build": [
-            "@php artisan storage:link",
-            "@php artisan optimize:clear"
+            "@php artisan optimize:clear",
+            "@php artisan config:cache",
+            "@php artisan route:cache",
+            "@php artisan view:cache"
         ],
         "render-post-deploy": [
-            "@php artisan migrate --force",
-            "@php artisan view:cache",
-            "@php artisan event:cache"
-        ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --host=0.0.0.0 --port=8000\" \"npm run dev\" --names=server,vite"
-        ],
-        "docker-build": [
-            "@php artisan cache:clear",
-            "@php artisan config:clear",
-            "@php artisan route:clear",
-            "@php artisan view:clear"
+            "@php artisan migrate --force"
         ]
-    },
-    "extra": {
-        "laravel": {
-            "dont-discover": []
-        }
     },
     "config": {
         "optimize-autoloader": true,
@@ -82,9 +44,9 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
-        },
-        "platform-check": false
+            "php-http/discovery": true,
+            "laravel/pint": true
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true

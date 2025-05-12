@@ -1,49 +1,47 @@
-FROM php:8.2-fpm
+# Используем многоэтапную сборку для уменьшения размера образа
+FROM php:8.2-fpm AS builder
 
-# Установка системных зависимостей
+# 1. Установка системных зависимостей
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    libsqlite3-dev \
+    libzip-dev \
     zip \
     unzip \
-    nodejs \
-    npm
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl
 
-# Создаем не-root пользователя
-RUN useradd -G www-data,root -d /var/www appuser
-RUN mkdir -p /var/www/.composer && \
-    chown -R appuser:www-data /var/www/.composer
-
-# Устанавливаем Composer
+# 2. Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Рабочая директория
+# 3. Рабочая директория и копирование файлов
 WORKDIR /var/www
-
-# Копируем файлы
 COPY . .
 
-# Меняем владельца файлов
-RUN chown -R appuser:www-data /var/www
+# 4. Установка зависимостей и сборка
+RUN composer install --no-dev --optimize-autoloader --no-interaction \
+    && npm install --force \
+    && npm run build \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
-# Переключаемся на не-root пользователя
-USER appuser
+# 5. Финальный образ
+FROM php:8.2-fpm
 
-# Установка PHP зависимостей
-RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
-
-# Установка JS зависимостей и сборка фронта
-RUN npm install && npm run build
-
-# Возвращаемся к root для запуска php-fpm
-USER root
+# Копируем только нужные файлы из builder
+COPY --from=builder /var/www /var/www
 
 # Настройка прав
-RUN chmod -R 775 storage bootstrap/cache
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-EXPOSE 9000
-CMD ["php-fpm"]
+WORKDIR /var/www
+
+# Порт и команда запуска
+EXPOSE ${PORT:-8000}
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=${PORT:-8000}"]

@@ -9,7 +9,10 @@ export default defineConfig({
                 'resources/sass/app.scss',
                 'resources/js/app.js',
             ],
-            refresh: true,
+            refresh: [
+                'resources/views/**',
+                'routes/**',
+            ],
         }),
         vue({
             template: {
@@ -20,26 +23,39 @@ export default defineConfig({
             },
         }),
     ],
+    
+    // Настройки для Render.com
+    base: '/build/',  // Критически важно для корректных путей
+    publicDir: 'public',
+    
     resolve: {
         alias: {
             vue: 'vue/dist/vue.esm-bundler.js',
+            '@': '/resources/js',  // Добавлен алиас для удобства
         },
     },
-    server: {
-        host: '0.0.0.0',  // Важно для Render
-        port: process.env.PORT || 5173,  // Используем порт из переменной окружения
-        strictPort: true,
-        proxy: {
-            '/': {
-                target: `http://localhost:${process.env.PORT || 8000}`,
-                changeOrigin: true,
-                secure: false,
-            },
-        },
-    },
+    
+    // Оптимизация сборки
     build: {
         manifest: true,
         outDir: 'public/build',
         emptyOutDir: true,
+        rollupOptions: {
+            output: {
+                entryFileNames: `[name].[hash].js`,
+                chunkFileNames: `[name].[hash].js`,
+                assetFileNames: `[name].[hash].[ext]`,
+            },
+        },
+    },
+    
+    // Настройки сервера разработки (не используются на Render)
+    server: {
+        hmr: {
+            host: 'localhost',
+        },
+        watch: {
+            usePolling: true,
+        },
     },
 });
